@@ -1,0 +1,291 @@
+{smcl}
+{* 16jun2004}{...}
+{hline}
+{center:{hi:Anatomy of a Graph}}
+{hline}
+
+{p 0 4 0}How do we refer to graph objects and sub-objects when manipulating 
+	 them directly?
+
+. {stata anatomy0}
+
+. {stata anatomy} {right:{stata view anatomy.ado:ado-file}}
+{hline}
+
+{p 4 4 4}{it}
+Click on the {stata anatomy0} link and look at the resulting graph.  Two parts
+of this graph have been labeled and those labels show how we refer to the two
+parts of the graph.  The title is called {cmd:.Graph.title}.  Because we have
+not named our graph using the {cmd:name()} option or the {cmd:graph rename}
+command, our graph has the default name {cmd:.Graph}.  A graph is a nested
+object containing, among other things a title, and we refer to that title
+within {cmd:Graph} by typing {cmd:.Graph.title}.  Note that the leading dot
+({cmd:.}) is a required part of the name {c -} all class system names begin
+with a dot.  Similar to the title, the graph's plotregion is referred to as
+{cmd:.Graph.plotregion1}.  The plotregion is numbered because it is possible
+for a graph to have more than one plotregion.
+
+{p 4 4 4}{it}
+Now, click on {stata anatomy} and let's look at a graph with more object's
+labeled with their names.  We can see that the title of the X-axis is nested
+within the axis itself and is called {cmd:.Graph.xaxis.title}.  The keys of a
+legend are stored in an array and so the first key is referred to as
+{cmd:.Graph.legend.key[1]}.  The other components of the graph are named
+similarly.  
+
+{p 4 4 4}{it}
+Also note that the title contains another object called {cmd:.style}, with the
+full name {cmd:.Graph.title.style}.  Almost all of the other objects also have
+a {cmd:.style} object, and, indeed almost every object that can be drawn has a
+{cmd:.style}.  The style controls how an object looks and the vast majority of
+options to the {cmd:graph} command do nothing more than set the values of the
+objects contained in the {cmd:.style}.
+
+{p 4 4 4}{it}
+Before going on, let's show that {stata anatomy} is nothing but an ado-file
+that uses the {help line} graph command to draw the graph we have just seen.
+Click on {stata view anatomy.ado:ado-file} above to see the contents of the
+{cmd:anatomy} ado file.  (Note, you will need to click the "Back" button on
+the viewer to bring yourself back to this slide). Looking at the end of the
+{cmd:line} command we see that additional options can be supplied to
+{cmd:anatomy} and will be added to the options of the {cmd:line}
+command.{sf}{p_end}
+{hline}
+{p 4 4 4}{it}
+Armed with this information, let's{p_end}
+{p 7 10 4}1.  Change the title to be {cmd:huge} and {cmd:red} using 
+	options to {cmd:line}{p_end}
+{p 7 10 4}2.  Redraw the original graph with its small, black title{p_end}
+{p 7 10 4}3.  Edit the title style directly using a the {cmd:.rows.smcl}
+program to make the title {cmd:huge} and {cmd:red}{p_end}
+{p 7 10 4}2.  Redisplay our graph to see that our edit had exactly the same
+effect as using the options.{p_end}
+
+{p 4 4 4}{it}
+Do these steps by clicking the the four commands below in sequence.  Be sure
+to wait and examine the drawn graphs after steps 1, 2, and 4.{sf}{p_end}
+{hline}
+
+{p 0 4 0}Some simple manipulations:
+
+{p 0 4 0}. {stata anatomy title(, color(red) size(huge))} 
+
+{p 0 4 0}. {stata anatomy}
+
+{p 0 4 0}. {stata .Graph.title.style.editstyle color(red) size(huge) editcopy}
+
+{p 0 4 0}. {stata graph display}{p_end}
+
+{hline}
+{p 4 4 4}{it}
+Let's break down the 3rd line.  We are clearly referring to the object
+{cmd:.Graph.title.style}, but what is {cmd:.editstyle}?  It is just a member
+program that can be run on ANY style object.  In this case, it is a
+{it:textboxstyle} as documented in help {help textboxstyle:{it:textboxstyle}}.
+The {cmd:.editstyle} program takes arguments and among those arguments are
+{cmd:stylename({it:style})} arguments to set the values of the styles nested
+within a {it:textboxstyle}.  Specifically, we set the {cmd:.color} to be
+{cmd:red} and the {cmd:.size} to be {cmd:huge}.{sf}
+
+{hline}
+
+What does the {cmd:editcopy} argument do?
+
+{p 4 4 4}{it}
+Let's see by example.  For the remainder of our examples, we will move to a
+slightly cleaner version of the anatomy graph {c -} {cmd:anatomy1}.  Click the
+following 3 commands.  Note that our {cmd:.editstyle}, in this case, is
+operating on the X-axis style and that we are trying to change the axis labels
+to be {cmd:large} and {cmd:red}.  The axis style is deeply nested and we can
+see that in the nested argument to {cmd:.editstyle}.{sf}
+
+{p 0 4 0}. {stata anatomy1}
+
+{p 0 4 0}. {stata .Graph.xaxis1.style.editstyle majorstyle(tickstyle(textstyle( color(red) size(large) )))}
+
+{p 0 4 0}. {stata graph display}
+
+{p 4 4 4}{it}
+That isn't exactly what we wanted.  Instead of changing just the look of the
+X-axis labels, we also changed the Y-axis labels.  In some cases, that might
+be a good thing, but it is not what we set out to do.
+
+{p 4 4 4}{it}
+What has happened is that we edited the base definition of a default axis
+style, and since both the X- and Y-axes were using this default axis style,
+they were both affected by our edit.
+
+{p 4 4 4}{it}
+Moreover, what we did went even deeper than that.  Let's redraw the graph from
+the original command.{sf}
+
+{p 0 4 0}. {stata anatomy1}{p_end}
+
+{p 4 4 4}{it}
+Our large, red labels stuck.
+
+{p 4 4 4}{it}
+What if we use a completely different dataset and draw a different type of
+plot.  Let's draw a simple scatter plot using the auto data by clicking the
+following 2 commands in sequence.
+{sf}
+
+{p 0 4 0}. {stata sysuse auto}{p_end}
+{p 0 4 0}. {stata scatter mpg weight}{p_end}
+
+{p 4 4 4}{it}
+Wow!  We didn't ask for any options on our new scatter plot, yet it picked up
+our edit of the graph we drew earlier.  This occurs because our edit
+changed the underlying definition of a default axis.
+
+{p 4 4 4}{it}
+Again, this might be interesting and useful behaviour in some circumstances,
+but it wasn't what we were trying to do.
+
+{p 4 4 4}{it}
+Let's prove that edit wasn't permanent by {cmd:discard}ing to clear the
+graphics system and redrawing the anatomy graph.{sf}
+
+{p 0 4 0}. {stata discard}{p_end}
+{p 0 4 0}. {stata anatomy1}{p_end}
+
+{p 4 4 4}{it}
+Whew!  Finally things are back to normal.{sf}
+
+{p 4 4 4}{it}
+Now, let's apply the same edit, only including the {cmd:editcopy} argument.
+{sf}
+
+{p 0 4 0}. {stata .Graph.xaxis1.style.editstyle majorstyle(tickstyle(textstyle( color(red) size(large) ))) editcopy}
+
+{p 0 4 0}. {stata graph display}{p_end}
+
+{p 4 4 4}{it}
+That is what we were after.  By using {cmd:editcopy} we made a copy of the
+style local to the X-axis before setting the text to be large and red.  Our
+edit now affects only this X-axis on this graph.
+{sf}
+
+{hline}
+
+Plot types are (usually) just style settings
+
+{p 4 4 4}{it}
+You might be surprised to learn that the type of a plot, {cmd:line},
+{cmd:scatter}, {cmd:bar}, etc., is usually determined simply by a style
+setting.  Our first plot is currently a line plot.  What if we use
+{cmd:.editstyle} to change its {cmd:.type} to {cmd:area}?  (Click the
+following two commands.){sf}
+
+{p 0 4 0}. {stata .Graph.plotregion1.plot1.type.editstyle area}
+
+{p 0 4 0}. {stata graph display}{p_end}
+
+{p 4 4 4}{it}
+The first plot now renders as an area.{sf}
+
+{hline}
+
+Setting how {cmd:twoway} plots look
+
+{p 4 4 4}{it}
+Because so many things can be done with the look of plots and because they are
+the backbone of {cmd:twoway} graphs, we should probably see how to change the
+look of a plot.  Let's change the fill color of our new area plot.
+{sf}
+
+{p 0 4 0}. {stata .Graph.plotregion1.plot1.style.editstyle area(shadestyle(color(green))) editcopy}
+
+{p 0 4 0}. {stata graph display}{p_end}
+
+{p 4 4 4}{it}
+Perfect.  
+
+{p 4 4 4}{it}
+That our plot is called {cmd:plot1} within plotregion, {cmd:.plotregion1} is
+not surprising.  Why though is our argument to {cmd:.editstyle} so nested?
+Because the style of a plot is nested set of simpler styles.  We have actually
+changed the value of the the colorstyle {c -}
+{cmd:.Graph.plotregion1.plot1.style.area.shadestyle.color} and made it green.
+
+{p 4 4 4}{it}
+If the styles are just nested, why didn't we choose to apply {cmd:.editstyle}
+all the way down at the {cmd:.color} level, or somewhere else along the way?
+Why did we apply {cmd:.editstyle} to the top-level style?  The answer is
+related to the reason we use the {cmd:editcopy} argument.  If we applied our
+{cmd:.editstyle} below the top-level {cmd:.style}, then we would only be
+making a copy of that component style and not the entire {help pstyle}.
+Because no copy was made of the top-level style, we would again be making
+changes to the default definition of the style and those changes would appear
+in other graphs drawn using that style.{p_end}
+{sf}
+{hline}
+
+Saved graphs are a story
+
+{p 4 4 4}{it}
+Let's look at one more aspect of graphs.  Up until now, we have been playing a
+little fast and loose with our edits and the following example will
+demonstrate that.  We have a nice edited graph, let's save that graph to disk
+and restore it using by clicking on the following 3 commands (the
+{cmd:discard} assures us that the graphics system has been cleared).
+{sf}
+
+{p 0 4 0}. {stata graph save mygraph, replace}{p_end}
+{p 0 4 0}. {stata discard}{p_end}
+{p 0 4 0}. {stata graph use mygraph}
+
+{p 4 4 4}{it}
+Where did all of our nice edits go?  We are back to the original
+{cmd:anatomy1} graph devoid of our edits.  Our edits were lost because we only
+changed the underlying graph objects, we did not tell the graph to record our
+changes so that the would be saved with the graph.  Among other things,
+recording these changes is what makes it feasible to "re-scheme" a graph when
+it is {cmd:graph use}d with the {cmd:scheme()} option.
+{sf}
+
+{p 4 4 4}{it}
+I should note, we could have printed, exported, or saved and restored this as
+an {cmd:asis} graph and things would have gone fine.  All of these processes
+rely strictly on the objects created by the graph and do not require that the
+graph record the edits required to recreate or edit those objects.{sf}
+
+{p 4 4 4}{it}
+How then do we record our edits?  At the lowest level, recording edits is
+actually quite involved because the edits must be recorded with the correct
+object.  Imagine two graphs drawn on different schemes each with some options
+to change the look of a title or a plot.  Now these graphs are 
+{cmd:graph combine}d and during that combine the look of the title of the
+combined graph was changed.  Where the edits are recorded can be tricky.
+
+{p 4 4 4}{it}
+Luckily for us, that intricacy can be hidden, and all we need do is prefix our
+edit commands with the support program {cmd:_gm_edit}.  That program
+determines where our edit needs to be recorded and makes sure that our edit is
+both made and recorded.
+
+{p 4 4 4}{it}
+Let's redraw the graph and reapply our edits; this time including 
+the {cmd:_gm_edit} prefix. (Click the next four commands){sf}.
+
+{p 0 4 0}. {stata anatomy1}
+
+{p 0 4 0}. {stata _gm_edit .Graph.plotregion1.plot1.type.editstyle area}
+
+{p 0 4 0}. {stata _gm_edit .Graph.plotregion1.plot1.style.editstyle area(shadestyle(color(green)))}
+
+{p 0 4 0}. {stata graph display}
+
+{p 4 4 4}{it}
+Now, let's save and restore our edited graph. (Click the next 3 commands.){sf}
+
+{p 0 4 0}. {stata graph save mygraph, replace}{p_end}
+{p 0 4 0}. {stata discard}{p_end}
+{p 0 4 0}. {stata graph use mygraph}
+
+{p 4 4 4}{it}
+That did it.{sf}
+
+
+{hline}
+{center:{view what.smcl:<<}   {view tindex.smcl:index}   {view combine.smcl:>>}}

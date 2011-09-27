@@ -1,0 +1,21 @@
+{smcl}
+{* 21jun2004}{...}
+{hline}
+{center:{hi:What are Stata graphs}}
+{hline}
+
+{p 0 2 0}o Nested collections of class-system objects
+
+{p 0 2 0}o Objects containing sub-objects describing how they are to 
+look -- styles
+
+{p 0 2 0}o Objects capable of drawing themselves
+
+{p 0 2 0}o Objects containing scripts (or logs) for reproducing themselves
+
+{p 0 2 0}o Top-level graphs are grids{p_end}
+{p 2 2 0}(twoway, bar, combine, etc.}
+
+
+{hline}
+{center:{view example.smcl:<<}   {view tindex.smcl:index}   {view what_cmd.smcl:>>}}

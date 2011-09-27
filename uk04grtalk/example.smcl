@@ -1,0 +1,30 @@
+{smcl}
+{* 21jun2004}{...}
+{hline}
+{center:{hi:Some example graphs}}
+{hline}
+
+{p 0 2 0}. {stata sysuse lifeexp , clear}{p_end}
+{p 0 2 0}. {stata keep if safewater < .}{p_end}
+{p 0 2 0}. {stata generate dwater = safewater > 76.1}
+
+{p 0 2 0}. {stata do example1:graph twoway scatter lexp gnppc if dwater ||}{p_end}
+	       {stata do example1:scatter lexp gnppc if !dwater ,}
+	{stata do example1:title("Life expectancy at birth")}
+	{stata do example1:legend(}
+	   {stata do example1:title(Water safety rating)}
+	   {stata do example1:order(2 "Below average" 1 "Above average")}
+	{stata do example1:)}
+
+
+{p 0 2 0}. {stata do example2:graph twoway scatter lexp gnppc if dwater ||}{p_end}
+	       {stata do example2:scatter lexp gnppc if !dwater ,}
+	{stata do example2:title("Continent" , size(small))}
+	{stata do example2:legend(}
+	   {stata do example2:title(Water safety rating)}
+	   {stata do example2:order(2 "Below average" 1 "Above average")}
+	{stata do example2:)}
+	{stata do example2:by(region , title("Life expectancy at birth"))}
+
+{hline}
+{center:{view twoways.smcl:<<}   {view tindex.smcl:index}   {view what_gr.smcl:>>}}

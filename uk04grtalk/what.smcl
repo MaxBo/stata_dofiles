@@ -1,0 +1,80 @@
+{smcl}
+{* 21jun2004}{...}
+{hline}
+{center:{hi:What are Stata graphs}}
+{hline}
+
+{p 0 2 0}o Nested collections of class-system objects
+
+{p 0 2 0}o Objects containing sub-objects including styles describing how 
+           they are to look {c -} styles
+
+{p 0 2 0}o Objects capable of drawing themselves
+
+{p 0 2 0}o Objects containing scripts (or logs) for reproducing themselves
+
+{hline}
+{p 4 4 4}{it}
+You will probably be surprised to hear that I do not think of the {cmd:graph}
+command as Stata's graphics.  Rather, {cmd:graph} is a not-so-thin parsing and
+object creation engine that creates objects in the class system.  Objects that
+know how to draw themselves and replay themselves from files.  And, objects
+that can contain other objects.
+
+{p 4 4 4}{it}
+It is the direct manipulation of these objects that lies at the heart of the
+graphics system.
+
+{p 4 4 4}{it}
+There are a few computer science terms that we should mention about the
+object-oriented programming paradigm on which the graphics system is built.
+In themselves they are not that helpful for the topic at hand, but they
+provide a context for how things are done in the graphics classes.{sf}
+{p_end}
+{hline}
+
+{hi:What is special about objects?}
+
+{p 0 2 0}o Encapsulation {c -} programs and data are bound meaning that 
+	class member programs run only on objects for that class
+
+{p 0 2 0}o Inheritance {c -} classes/objects can inherit their data 
+	(perhaps sub-objects) and member programs from an already existing 
+	class
+
+{p 0 2 0}o Polymorphism {c -} member programs with the same names can work 
+	differently for different classes of objects.
+
+{hline}
+{p 4 4 4}{it}
+What all of this means for our purposes is that we can create a graph object
+for ourselves by {it:inheriting} from another object and picking up all of
+that object's characteristics {c -} both data (variables) and programs.  It
+also means that programs, and we are talking about pretty-much standard ado
+programs, are associated with a particular object (or really class of object)
+and that program can only be run on objects of its own class.
+
+{p 4 4 4}{it}
+The object-oriented programming facilities in Stata, but not the graphics
+classes themselves, are documented in {bf:[P] class} or in help {help class}.
+
+{p 4 4 4}{it}
+For those wanting to know little more about the structure of graphs, the
+following ancillary slides introduce some material differently than the talk.
+
+{p 7 9 0}
+    {view what_cmd.smcl:>>What is the {cmd:graph} command} (ancillary)
+
+{p 7 9 0}
+    {view what_sav.smcl:>>What are saved graphs} (ancillary)
+
+{p 7 9 0}
+    {view class.smcl:>>A touch of class {c -} quick review} (ancillary)
+
+{p 7 9 0}
+    {view style.smcl:>>You gotta have style} (ancillary)
+
+
+{sf}
+{hline}
+{center:{view twoways.smcl:<<}   {view tindex.smcl:index}   {view anatomy.smcl:>>}}

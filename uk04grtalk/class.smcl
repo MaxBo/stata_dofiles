@@ -1,0 +1,31 @@
+{smcl}
+{* 21jun2004}{...}
+{hline}
+{center:{hi:A touch of class {c -} quick review}}
+{hline}
+
+{p 0 0 0}To manipulate graphs and their components beyond the 
+	 {cmd:graph} command, you must use 
+	 the {cmd:class} syntax, see {bf:[P] class}{p_end}
+{hline}
+
+{cmd:.x = #} {right:// number             }
+
+{cmd:.x = "string"} {right:// string             }
+
+{cmd:.x = .myclass.new} {right:// class instance     }
+
+{cmd:.x = {1, 2, "three", .a.four}} {right:// array (polymorphic)}
+
+{cmd:.x.add 2} {right:// run member program {c -}   }
+		 {right:// just a Stata program   }
+		 {right:// associated with a class}
+
+{cmd:.x.setstyle , style(red)} {right:// set a style        }
+
+{cmd:.x.editstyle color(red) editcopy}{right:// better way to      }
+	{right:// set a style        }
+
+
+{hline}
+{center:{view what.smcl:<<}   {view tindex.smcl:index}}

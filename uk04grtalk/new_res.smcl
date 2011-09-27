@@ -1,0 +1,81 @@
+{smcl}
+{* 21jun2004}{...}
+{hline}
+{center:{hi:Resources for those less familiar with {cmd:graph}}}
+{hline}
+
+{p 0 2 0}o Graphics menu and dialog boxes
+
+{p 0 2 0}o {it:Visual Guide to Stata Graphics} , Michael Mitchell, 
+Stata Press, 2004
+
+{p 0 2 0}o Many examples with syntax in:
+
+{p 4 6 0}	- {it:A Handbook of Statistical Analyses using Stata}, Third
+Edition, Sophia Rabe-Hesketh and Brian Everitt, Chapman & Hall/CRC, 2004
+
+{p 4 6 0}	- {it:Statistics with Stata (Updated for Version 8)}, Lawrence 
+C. Hamiliton, Duxbury Press, 2004
+
+{p 4 6 0}	- Recent {it:Stata Journal} columns, "Speaking Stata", by
+Nicholas Cox.
+
+{hline}
+{p 4 4 4}{it}
+Specifically, pull down the {cmd:graphics} menu and select a graph.  I would
+start with an "Easy graph", in particular 
+{cmd:Graphics|Easy graphs|Scatter plot}.  Use your favorite dataset and begin
+drawing graphs by selecting variables and setting options.  Use the
+{cmd:submit} button to draw graphs so that the dialog box stays up and you you
+can make more changes.  The tabs on the dialog box give you an overview of the
+main objects on a graph and the items on each tab show the type of things you
+can change.  
+
+{p 4 4 4}{it}
+Note that as you {cmd:submit} graphs to be drawn that the command to produce
+the graph appears in the {cmd:Results} window.  By changing things on the
+dialog box and observing the changes in the command, you can learn much about
+the {cmd:graph} command and its options.
+
+{p 4 4 4}{it}
+When you tire of the "Easy" dialog boxes, graduate to 
+{cmd:Graphics|Overlaid twoway graphs}.  Initially, ignore the {cmd:Plot 2},
+{cmd:Plot 3}, and {cmd:Plot 4} tabs, and just notice how much more control you
+have over the {cmd:scatter}, {cmd:line}, {cmd:bar}, {cmd:fit}, etc. that you
+are graphing.  Note also how much more control you have over the axes, the
+titles, the captions, and the legends.  Remember that as you {cmd:submit}
+commands from this dialog box that you can see the resulting {cmd:graph}
+command in the {cmd:Results} window.
+
+{p 4 4 4}{it}
+Later, choose the {cmd:Plot 2} tab and add a {cmd:line}, {cmd:scatter}, or
+{cmd:fit} to your original plot {c -} {cmd:Plot 1}.  Change that new plot from
+one "Type" (e.g., {cmd:scatter} or {cmd:line}) to another.  Change how it
+looks using the controls on the {cmd:Plot 2} tab.  Note that you can use the
+"if:" qualifier to produce 2 or more plots from different subsamples.  Look at
+the {cmd:Results} window to see how multiple plots are produced using the
+{cmd:graph} command.
+
+{p 4 4 4}{it}
+Go back to the {cmd:Graphics} menu and select some other graph types.  Note
+that many of the tabs are the same as those from {cmd:Overlaid twoway graphs}
+and that what you learned there applies equally to this new graph type.
+
+{p 4 4 4}{it}
+Explore.  Have fun.
+
+{p 4 4 4}{it}
+When you want to learn more about the {cmd:graph} command, locate a copy of
+Michael Mitchell's book {it:Visual Guide to Stata Graphics}.  It provides a
+very complete introduction and overview in an easily-browsed format.
+
+{p 4 4 4}{it}
+To see many examples of graph's and get a brief overview of the {cmd:graph}
+command, try the other books listed above.
+
+{p 4 4 4}{it}
+To see {cmd:graph} used in sophisticated ways, see articles in the 
+{it:Stata Journal} and in particular the latest series of articles in Nick
+Cox's "Speaking Stata" column.{p_end}{sf}
+{hline}
+{center:{view twoways.smcl:<<} {view tindex.smcl:index}}

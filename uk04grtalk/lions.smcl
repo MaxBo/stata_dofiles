@@ -1,0 +1,53 @@
+{smcl}
+{* 21jun2004}{...}
+{hline}
+{center:{hi:The undocumented classes underlying {cmd:graph}}}
+{hline}
+
+		{hi:Lions,}
+		      {hi:and Tigers,}
+				 {hi:and Bears}
+
+{hline}
+{p 4 4 4}{it}
+We are going to introduce some undocumented features of Stata'a graphics.
+Given Stata's history of openness, and that even the {cmd:gph} commands
+underlying the previous graphics system were documented, it may be surprising
+that the facilities underlying the {cmd:graph} command are undocumented.  There
+are several reasons for this.  Whereas the {cmd:gph} system encompassed only a
+es.smcl of commands, the facilities underlying the new {cmd:graph} command
+are big ...{sf}{p_end}
+{hline}
+
+{p 0 2 0}o {view big.smcl:>> Big}
+
+{p 0 2 0}o Intermediate layer need for widespread adoption
+
+{p 0 2 0}o {cmd:twoway} is very, very flexible
+
+{hline}
+{p 4 4 4}{it}
+While documenting such a system is a large task, that wasn't the reason it was
+not documented.  That we expected significant changes to this system based on
+your comments and input was.  We expected that these changes would likely
+break code written to the original API of the system and that has indeed
+turned out to be true.
+
+{p 4 4 4}{it}
+Second, we believed, and still do believe, that although the underlying
+faculties beneath graphics can be accessed by users, an intermediate layer
+will be needed for widespread use of these facilities.
+
+{p 4 4 4}{it}
+Third, and most important the {cmd:twoway} command, combined with Stata's data
+management commands is flexible enough to produce a host of custom graphs.  As
+Nick Cox, Ulrich Kohler, Michael Blasnik, and many other have shown, this is
+typically much easier than rolling your own graph using low-level facilities.
+
+{p 4 4 4}{it}
+Here are a few examples using this approach and I heartily recommend it as the
+first, best course of action.
+
+
+{hline}
+{center:{view cover.smcl:<<}   {view tindex.smcl:index}   {view twoways.smcl:>>}}

@@ -1,0 +1,18 @@
+{smcl}
+{* 21jun2004}{...}
+{hline}
+{center:{hi:What is the {cmd:graph} command}}
+{hline}
+
+{p 0 2 0}o Parsing and creation engine to:
+
+{p 4 6 0}	- parse what the user wants drawn and how it is to look
+
+{p 4 6 0}	- create class-system objects
+
+{p 4 6 0}	- set how objects look
+
+{p 4 6 0}	- create a log of how to recreate the objects
+
+{hline}
+{center:{view what.smcl:<<}   {view tindex.smcl:index}}
