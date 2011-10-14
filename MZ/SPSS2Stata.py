@@ -16,13 +16,33 @@ import re
 p_into = re.compile('(?<=INTO )\w+')
 p_labels = re.compile('(?<=LABELS )\w+')
 pw = re.compile("\s{2,}")
-def convert():
-    f = open(path)
+
+
+def addFilter(command,Filter):
+    if Filter:
+        if ',' in command:
+            command = command.replace(',',' %s,' %Filter)
+        else:
+            command += ' %s' %Filter
+    return command
+
+def convert(infile=path,outfile=path.replace('.sps','do')):
+    """
+    Converts SPSS Syntax-Files into Stata do-files
+    """
+    Filter = False
+    f = open(infile)
+    fout = open(outfile,'w')
     try:
         z = f.readline()
         while z:
             if not z.startswith('*'):
-                if z.startswith("RECODE"):
+
+                if z.strip().startswith("FILTER"):
+                    filterVar = z.strip().replace('FILTER BY','').strip(' $.')
+                    Filter = 'if ' + filterVar
+
+                if z.strip().startswith("RECODE"):
                     command = 'recode '
                     link = False
                     while True:
@@ -41,6 +61,7 @@ def convert():
                             break
                         z = f.readline()
                     command = command.replace('ELSE','else')
+                    command = command.replace('SYSMIS','.')
                     command = re.sub(pw,' ',command)
 
                     m = p_into.search(command)
@@ -48,34 +69,50 @@ def convert():
                         newVarName = m.group(0)
 ##                        print newVarName
                         command = command.replace('INTO %s' %newVarName, ', generate(%s)' %newVarName)
-                    print command
+                    command = addFilter(command,Filter)
+                    fout.write(command + '\n')
 
 
-                if z.startswith("VARIABLE LABELS"):
+                if z.strip().startswith("VARIABLE LABELS"):
                     command = z.strip().replace("VARIABLE LABELS", "label variable").rstrip('.')
-                    print command
+                    fout.write(command + '\n')
 
-                if z.startswith("VALUE LABELS"):
+                if z.strip().startswith("VALUE LABELS"):
                     command = z.strip().replace("VALUE LABELS", "label define").rstrip('.')
-                    command = command.replace('_$','')
-                    print command
+                    command = command.replace('$','')
+                    fout.write(command + '\n')
                     command2 = z.strip().rstrip('.')
-                    command2 = re.sub(pw,' ',command2).replace('_$','')
+                    command2 = re.sub(pw,' ',command2).replace('$','')
                     m = p_labels.search(command2)
                     if m:
                         varName = m.group(0)
 ##                        print varName
                         command2 = 'label values %(vn)s %(vn)s' %{'vn': varName}
-                        print command2
+                        fout.write(command2 + '\n')
 
 
-                if z.startswith("COMPUTE"):
+                if z.strip().startswith("COMPUTE"):
                     command = z.strip().replace("COMPUTE", "generate").rstrip('.')
                     command = command.replace('_$','')
                     # to do: = durch == ersetzen
-                    print command
+                    command = addFilter(command,Filter)
+                    fout.write(command + '\n')
 
+                if z.strip().startswith("CROSSTABS"):
+                    command = 'tab'
+                    while True:
+                        if z.strip().startswith('/TABLES'):
+                            tableNames = z.strip().replace('/TABLES','').split('BY')
+                            for tableName in tableNames:
+                               command += ' '+tableName.strip('= ')
+                        if z.strip().endswith('.'):
+                            command = command.rstrip('.')
+                            break
+                        z = f.readline()
+                    command = addFilter(command,Filter)
+                    fout.write(command + '\n')
 
             z = f.readline()
     finally:
         f.close()
+        fout.close()
