@@ -29,6 +29,9 @@ recode wVM11 (1=1 "Fuss") (2=2 "Rad") (3/5 9=4 "sont. MIV") (6/7=5 "Pkw-F") (8 1
 recode TourVM11 (1=1 "Fuss") (2=2 "Rad") (3/5 9=4 "sont. MIV") (6/7=5 "Pkw-F") (8 10=3 "ÖV") (11=.b "sonstiges"),gen(Tourmode5)
 
 bysort PersId TourId (WegId): egen AWTour = total(wZweck == 1 | wZweck== 3)
+bysort PersId TourId (WegId): egen ShoppingTour = total(wZweckModell==5)
+bysort PersId TourId (WegId): egen SonstigeTour = total(!(wZweckModell==4 | wZweckModell==5 | wZweckModell==9))
+
 // markiere Hin- und Rückwege
 bysort PersId (WegId): gen istAW = 1 if (wZweck==1 | wZweck==3) & (wZweck[_n-1]==8 | wZweck[_n-1]==9 | wStartpunkt==1)
 bysort PersId (WegId): replace istAW = 2 if (wZweck==8) & (wZweck[_n-1]==1 | wZweck[_n-1]==3)
@@ -129,12 +132,20 @@ compress
 
 }
 
+
 quietly {
 noi di "speichere Datensatz für Einkaufsfahrten zwischen"
 preserve
 local fn "D:\\DatenMaxDiss\\MiD-H\\txt\\P_Einkauf.dta"
 keep if wZweckModell==4 & vonZuHause & TourAnzWege==2
 saveold `fn', replace
+restore
+preserve
+local fn "D:\\DatenMaxDiss\\MiD-H\\txt\\P_EinkaufAper.dta"
+keep if wZweckModell==5 & !SonstigeTour
+saveold `fn', replace
+keep WegId PersId caseid
+odbc insert WegId  PersId caseid, as("wegid persid caseid") dsn("h_localhost64") table("wege_ehaper") create
 restore
 }
 
@@ -230,8 +241,8 @@ replace _sample = 0 if lnwage>=.
 
 MiDH_Kosten, benzin(0.10) zeitkarte
 
-constraint define 2 tOV_FZBahn =  tOV_FZBus / 1.2
-constraint define 3 tOV_FZBus = -0.04
+constraint define 2 tOV_FZBahn =  tOV_FZBus / 1.2 // / 1.2
+constraint define 3 tOV_FZBus = -0.05
 // constraint define 4 tOV_WZ = tOV_FZBahn * 2
 constraint define 4 tOV_WZ = tOV_FZ * 2
 constraint define 5 tPkw = tMF
@@ -241,16 +252,39 @@ constraint define 5 tPkw = tMF
 
 // einfaches Modell zur Berechnung der LogSums 
 constraint define 4 tOV_WZ = tOV_FZ * 2
+constraint define 41 tOV_WZ = tOV_FZBahn * 2
 constraint define 5 tPkw = tMF
+constraint define 11 cPkw = 20*tPkw
+constraint define 12 cPkw = cOV
+constraint define 13 cPkwM = 0
+constraint define 14 cPkwM = cPkw
+constraint define 15 tFuss = tOV_Gehzeit
+constraint define 16 Bahn = Bus
+constraint define 20 F = 0
+constraint define 21 R = 0
+constraint define 22 Bahn = 0
 
 clogit chosen P_*Pkw M_*Pkw  /* & wZweck==7 ZK_OV   & wZweckEinkauf==502
 */ F R O M /*
-*/ tFuss tRad tPkw tMF tOV_FZ tOV_SWZ tOV_Gehzeit tOV_WZ /*  tOV_UH
+*/ tFuss tRad tPkw tMF tOV_FZ tOV_SWZ tOV_Gehzeit tOV_WZ /*  tOV_UH 
 */ cOV cPkw cPkwM    /*  cost cPkw cPkwM  tPark
-*/ if _sample & (wZweckModell==4) & vonZuHause & TourAnzWege==2,group(WegId) constraint(4 5) // 
+*/ if _sample & (wZweckModell==4) & vonZuHause & TourAnzWege==2,group(WegId) constraint(4 5 11/13) // 
+
+clogit chosen P_*Pkw M_*Pkw  /* & wZweck==7 ZK_OV   & wZweckEinkauf==502
+*/ F R Bus Bahn M /*
+*/ tFuss tRad tPkw tMF tOV_FZBus tOV_FZBahn tOV_SWZ tOV_Gehzeit tOV_WZ /*  tOV_UH 
+*/ cOV cPkw cPkwM   ZK_OV /*  cost cPkw cPkwM  tPark
+*/ if _sample & (wZweckModell==4) & vonZuHause & TourAnzWege==2,group(WegId) constraint(41 2 5 11 12 14 15 ) // 
+
+** Das ist das aktuelle Modell, das zur Schätzung für Einkaufen periodisch verwendet wurde...
+clogit chosen P_*Pkw M_*Pkw  /* & wZweck==7 ZK_OV   & wZweckEinkauf==502
+*/ F R Bus Bahn M /*
+*/ tFuss tRad tPkw tMF tOV_FZBus tOV_FZBahn tOV_SWZ tOV_Gehzeit tOV_WZ /*  tOV_UH 
+*/ cOV cPkw cPkwM   ZK_OV /*  cost cPkw cPkwM  tPark
+*/ if _sample & (wZweckModell==4) & vonZuHause & TourAnzWege==2,group(WegId) constraint(41 5 11 12 14 15 16) // 
 
 local fn "D:\\temp\\test2"
-estimates save `fn'
+estimates save `fn', replace
 outreg using `fn'.txt, bdec(5) tdec(5) noparen noaster replace
 
 clogit chosen P_*Pkw M_*Pkw  /* & wZweck==7 ZK_OV   & wZweckEinkauf==502

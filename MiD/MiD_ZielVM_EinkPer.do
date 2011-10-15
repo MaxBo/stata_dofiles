@@ -45,6 +45,10 @@ gen cOV = ZK_OV* ov_cost/ lnwage
 gen cPkw = P* iv_cost/ lnwage
 gen cPkwM = cPkw/ 2
 
+// setze Mindest-Fahr- und Gehzeiten im ÖV
+replace ov_fz = 3 if ov_fz < 3
+replace ov_gz = 5 if ov_gz < 5
+
 
 noi di "bilde Reisezeit-Variablen"
 // bilde Reisezeit-Variablen
@@ -77,12 +81,21 @@ predict U, xb
 gen eU = exp(U)
 bysort WegId ehid: egen sum_eU = total(eU), missing
 gen logsum = log(sum_eU)
-clogit chosenZiel lnzp logsum if F, group(WegId) constraint(1)
+* clogit chosenZiel lnzp logsum if F, group(WegId) constraint(1)
 clogit chosenZiel lnzp i.hPkwVerf#c.logsum if F, group(WegId) constraint(1)
+* clogit chosenZiel lnzp i.hPkwVerf#c.logsum##c.logsum if F, group(WegId) constraint(1)
+
+local fn "D:\\temp\\eh_per_Zielwahl"
+estimates save `fn', replace
+outreg using `fn'.txt, bdec(5) tdec(5) noparen noaster replace
+
+
 clogit chosenZiel lnzp i.hPkwVerf#i.zeitkarte#c.logsum if F, group(WegId) constraint(1)
 
+clogit chosenZiel lnzp i.hPkwVerf#c.logsum  if F, group(WegId) constraint(1)
+
 /// ggf. mit anderer Spezifikation kubisches LogSum(...) besser angepasst
-/// OV im Binnenverkehr der Verkehrszellen keine Fahrzeit ausgewiesen
+/// OV im Binnenverkehr der Verkehrszellen keine Fahrzeit ausgewiesen --- Done!
 /// hier sollten Dummy-Werte ergänzt werden, um die Modellschätzung zu erleichtern
 /// außerdem die Fusswege und die ParkZeitZiel korrigieren.
 
@@ -97,3 +110,15 @@ clogit chosen lnzp F R O ZK_OV M M_keinPkw M_getPkw P_keinPkw P_getPkw /*
 */ tFuss tRad tPkw tMF tPark tOV_FZ tOV_SWZ tOV_WZ tOV_UH tOV_Gehzeit iv_cost ov_cost /*
 */ if _sample, group(WegId) constraint(1)
 
+
+constraint define 11 iv_cost = 20*tPkw
+constraint define 12 ov_cost = 20*tOV_FZ
+constraint define 13 tOV_UH = 10*tOV_FZ
+constraint define 14 tOV_WZ = tOV_SWZ
+constraint define 15 tOV_Gehzeit = tFuss
+constraint define 16 iv_cost = ov_cost
+
+
+clogit chosen lnzp F R O ZK_OV M M_keinPkw M_getPkw P_keinPkw P_getPkw /*
+*/ tFuss tRad tPkw tMF tPark tOV_FZ tOV_SWZ tOV_WZ tOV_UH tOV_Gehzeit iv_cost ov_cost /*
+*/ if _sample, group(WegId) constraint(1  12  14 15 16)
