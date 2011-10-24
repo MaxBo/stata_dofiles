@@ -1,6 +1,6 @@
 clear
 set memory 700m
-local path "C:\MiD_RheinMain\Daten\Rohdaten\STATA\"
+local path "D:\DatenMaxDiss\MiD-Hessen\MiD_2008\STATA\"
 
 use "`path'MiD_Wege_Hessen_cod_bereinig_def.dta", clear
 
