@@ -3,9 +3,13 @@ odbc load, dsn("h_localhost64") table("h.sampled_results") clear lowercase noquo
 destring chosen, replace
 rename wid WegId
 merge m:1 WegId  using "D:\DatenMaxDiss\MiD-H\txt\P_Einkauf.dta"
-keep  WegId vznr zp chosen ehid t_kfz t_rad t_fuss ov_fz ov_swz ov_wz ov_gz ov_uh ov_uwz ov_zz ov_az ov_cost iv_cost iv_park /*
+keep  WegId vznr zp chosen ehid t_kfz t_rad t_fuss bus bahn ov_fz ov_fzbus ov_fzbahn ov_swz ov_wz ov_gz ov_uh ov_uwz ov_zz ov_az ov_cost iv_cost iv_park /*
 */ PersId caseid pid weg wZweckModell TourId mode5 Tourmode5  pGrup9 wage0 lnwage DichteSt DichteZi wZuzeit /*
 */ hPkwVerf pFhsPkw zeitkarte
+
+rename bus Bus
+rename bahn Bahn
+
 
 gen lnzp = ln(zp)
 constraint define 1 lnzp=1
@@ -66,6 +70,10 @@ replace tPark = iv_park if (P|M)
 
 gen tOV_FZ = 0
 replace tOV_FZ = ov_fz if O
+gen tOV_FZBus = 0
+replace tOV_FZBus = ov_fzbus if O
+gen tOV_FZBahn = 0
+replace tOV_FZBahn = ov_fzbahn if O
 gen tOV_SWZ = 0
 replace tOV_SWZ = ov_swz if O
 gen tOV_WZ = 0
@@ -110,6 +118,12 @@ clogit chosen lnzp F R O ZK_OV M M_keinPkw M_getPkw P_keinPkw P_getPkw /*
 */ tFuss tRad tPkw tMF tPark tOV_FZ tOV_SWZ tOV_WZ tOV_UH tOV_Gehzeit iv_cost ov_cost /*
 */ if _sample, group(WegId) constraint(1)
 
+
+clogit chosen lnzp P_*Pkw M_*Pkw  /* & wZweck==7 ZK_OV   & wZweckEinkauf==502
+*/ F R Bus Bahn M /*
+*/ tFuss tRad tPkw tMF tOV_FZBus tOV_FZBahn tOV_SWZ tOV_Gehzeit tOV_WZ /*  tOV_UH 
+*/ cOV cPkw cPkwM   ZK_OV /*  cost cPkw cPkwM  tPark
+*/ if _sample & (wZweckModell==4) ,group(WegId) constraint(1 41 5 11 12 14 15 16) // 
 
 constraint define 11 iv_cost = 20*tPkw
 constraint define 12 ov_cost = 20*tOV_FZ
