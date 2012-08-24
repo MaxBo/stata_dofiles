@@ -1,0 +1,10 @@
+use $Y\MiD-H\Stata\MiD_W.dta, clear
+bysort caseid pid: gen StartZuHause = w04[_n-1]==8 | w01==1
+recode w041 (501 = 1 "täglicher Bedarf") (502/503 506 = 2 "aperiodischer Bedarf") (-150/-100 19 999 = .a "keine Angabe") (-1 504 = 0 "anderes") (9999 = 4 "Arbeit"), gen(zweck5)
+replace zweck5= 4 if w04==1
+keep  caseid pid WegId StartZuHause zweck5
+
+local my_path "$Y\H\RoutenTables\\"
+local my_mdb "MiD_H_Routen"
+odbc32 insert , dialog(complete) dsn("$AccessDB;DBQ=`my_path'`my_mdb'") /*
+*/ table("yyy") create  sqlshow  
