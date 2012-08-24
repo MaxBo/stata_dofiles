@@ -1,0 +1,144 @@
+{smcl}
+{* 22jun2004}{...}
+{hline}
+{center:{hi:Bar? graphs}}
+{hline}
+
+{p 4 4 4}{it}
+Going even further into the the system on which {cmd:graph} is built, let's
+see how it is possible to add a whole new graph family to {cmd:graph} and have
+{cmd:graph} use that family as its own.  Official graph families, if you
+recall, include {cmd:twoway}, {cmd:bar} and {cmd:hbar}, {cmd:box} and
+{cmd:hbox}, {cmd:dot}, and {cmd:matrix}.  Families are the word that follows
+{cmd:graph} in a graph command.
+
+{p 4 4 4}{it}
+We don't want to write lots and lots of code, so we will base our new family
+on an existing family {c -} {cmd:bar}.{sf}
+
+{hline}
+
+{p 0 2 0}A secret about {cmd:graph}{p_end}
+
+{p 4 6 0}	o designed to find properly named classes and use 
+		  them just like official graph families {p_end}
+
+{p 4 6 0}	o the proper name is {it:<our_family>}{cmd:graph_g.class}{p_end}
+
+{hline}
+
+{p 0 22 0}{view balbargraph_g.class} {c -} a class derived from the
+	 official bar graph class
+
+{p 4 4 4}{it}
+We will call our new family {cmd:balbar} and derive it from the existing class
+that defines {cmd:bar} graphs.  If you will click on the link 
+{view balbargraph_g.class} above (click the viewers {cmd:Back} button to
+return), you will see the entire contents of the class-file that defines our
+new graph family.{sf}
+
+{p 4 4 4}{it}
+We won't go into too much detail about {cmd:balbargraph_g.class}, but there
+are a few things to note.  At the top of the file we see a {cmd:class}
+statement that defines what member variables are included in our class and
+some other aspects of the class.  In this case, we see that no new member
+variables are defined, but that the our class does inherit from the
+{cmd:bargraph_g} class {c -} the class that defines {cmd:bar} graphs.
+Inheriting from {cmd:bargraph_g} means that our new class has all of the
+member variables and member programs defined by {cmd:bargraph_g}.  Because no
+new variables are given in the class definition, we are not adding any member
+variables.  
+
+{p 4 4 4}{it}
+This concept of inheritance allows us to leverage the capabilities of the
+{cmd:bargraph_g} for our own purposes.  While our {cmd:balbargraph_g.class}
+file is a scant 57 lines long, the official {cmd:bargraph_g.class} is over
+3,600 lines long and implements pretty much all of the features of 
+{cmd:graph bar}
+
+{p 4 4 4}{it}
+Looking back at {view balbargraph_g.class} we see that it defines a single
+member program {cmd:draw_bar}.  In fact, it is redefining the {cmd:draw_bar}
+graph from the {cmd:bargraph_g.class} and is thus changing how bars are drawn.
+Every other feature of our new class is inherited without change from
+{cmd:bargraph_g.class}
+
+{p 4 4 4}{it}
+For more documentation on classes, see {bf:[P] class} or in help
+{help class}.
+
+{p 4 4 4}{it}
+We won't discuss the details of {cmd:draw_bar}.  Essentially, it uses
+low-level {cmd:gdi} calls to draw lines, points, symbols, and text.  These
+calls are are similar to the {cmd:gph} commands from pre-Stata8 graphics.
+There are a few tricks relating to scaling because of the way symbols are
+used, but most of the calls simply define how things look then draw the things
+{c -} lines and such.  The entire purpose of {cmd:draw_bar} is to draw a
+single bar given an {cmd:x} and {cmd:y} location for the middle of the bottom
+of the bar and a {cmd:size} for the height.{sf}
+
+{p 4 4 4}{it}
+
+{hline}
+
+{p 4 4 4}{it}
+Let's draw a simple bar chart using an extract from the US National
+Longitudinal Survey of Women from 1988.  We will use only a subset of
+occupations so the graph is not too cluttered and the {cmd:asyvar} option so
+that we get a little color.  (Click the next 3 commands.){sf}
+
+{p 0 2 0}. {stata sysuse nlsw88 , clear}
+
+{p 0 2 0}. {stata keep if occ==3 | occ==5 | occ==6 | occ==8 | occ==11}
+
+{p 0 2 0}. {stata graph bar wage , over(collgrad) asyvar over(occupation)}
+
+{hline}
+
+{p 4 4 4}{it}
+Now, let's get a look at our new graph family in action, by clicking in
+sequence on the following command.  Note that the only change in the command
+is switching {cmd:balbar} for {cmd:bar}.
+{sf}
+
+{p 0 2 0}. {stata graph balbar wage , over(collgrad) asyvar over(occupation)}{p_end}
+
+{hline}
+
+{p 4 4 4}{it}
+We claimed that our new family inherited a host of features from
+{cmd:bargraph_g.class}.  Let's see if that is true.
+
+{p 4 4 4}{it}
+Let's add the {cmd:percent} and {cmd:stack} options to our command.{sf}
+
+{p 0 2 0}. {stata graph balbar wage , over(collgrad) asyvar over(occupation) percent stack}{p_end}
+
+{p 4 4 4}{it}
+We can indeed draw stacked percentage balloon graphs.
+
+{p 4 4 4}{it}
+What if we were to draw our graph in a high wind.{sf}
+
+{p 0 2 0}. {stata graph balbar wage , over(collgrad) asyvar over(occupation) horizontal}{p_end}
+{hline}
+
+{p 4 4 4}{it}
+Because we are looking at labor data, let's try a another {cmd:draw_bar}
+program.  The {view stbargraph_g.class} also inherits from
+{cmd:bargraph_g.class}, but draws a slightly more complicated "bar".  Click on
+the class file if you want to see its contents, then click on the two
+{cmd:graph stbar} commands.{sf}
+
+{p 0 21 0}{view stbargraph_g.class} {c -} another class derived from the
+	 official bar graph class
+
+{hline}
+
+{p 0 2 0}. {stata graph stbar wage , over(collgrad) asyvar over(occupation)}
+
+{p 0 2 0}. {stata graph stbar wage , over(collgrad) asyvar over(occupation) percent stack}{p_end}
+
+
+{hline}
+{center:{view rip_plot.smcl:<<}   {view tindex.smcl:index}   {view arrows.smcl:>>}}

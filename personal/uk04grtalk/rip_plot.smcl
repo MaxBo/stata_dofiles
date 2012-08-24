@@ -1,0 +1,149 @@
+{smcl}
+{* 21jun2004}{...}
+{hline}
+{center:{hi:I don't have the data}}
+{hline}
+
+{p 4 4 4}{it}
+This example shows a little more of the underlying structure of graphs under
+the guise of an interesting trick. {sf}
+{hline}
+
+{p 4 4 4}{it}
+Assume you have been sent by email two Stata graphs as gph-files and that you
+do not have the data from which the graphs were created.  Let's {cmd:clear}
+Stata back to a pristine state and {cmd:graph use} two saved gph-files by
+clicking the next three commands in sequence.{sf}
+
+{p 0 4 0}. {stata clear}
+
+{p 0 4 0}. {stata graph use heat , name(heat)}{p_end}
+{p 0 4 0}. {stata graph use cool , name(cool)}
+
+{p 4 4 4}{it}
+What if we wanted to see both of these scatters on the same graph?  We have
+said that graphs are just composed of objects and that includes plots.  What
+if we just inserted the plot from one graph into the plotregion of the other
+graph?  Let's try.  It turns out that we must inform the plotregion that it
+is receiving a new plot and that is done with the {cmd:.Declare} member
+program.  Noting that we named our graphs {cmd:cool} and {cmd:heat}, we can
+issue the following command to declare a new plot in {cmd:.plotregion1} of the
+{cmd:.cool} graph, naming that new plot {cmd:plot2} and making the value of
+that plot a reference to the plot on the {cmd:.heat} graph {c -}
+.heat.plotregion1.plot1.  That is what the following command does.{sf}
+
+{p 0 4 0}. {stata .cool.plotregion1.Declare plot2 = .heat.plotregion1.plot1.ref}
+
+{p 4 4 4}{it}
+We said that the {cmd:.cool.plotregion1.plot2} would be a reference to our
+the plot from {cmd:.heat} and that is what the {cmd:.ref} at the end of the
+command designates.  Without much explanation, will you accept that it is
+almost always best to copy things around and among graphs by reference rather
+than by value (not using the {cmd:.ref} suffix.  This allows the objects to
+retain their linkages to the scheme, because we are literally referring to
+the same plot object.{sf}
+
+{p 4 4 4}{it}
+Let's see our handiwork, by clicking on the command below.{sf}
+
+{p 0 4 0}. {stata graph display}
+
+{p 4 4 4}{it}
+Well, that is pretty interesting, but much of the new plot is trailing off the
+right of our graph.  We told the plotregion of the {cmd:.cool} graph to add
+this plot, however, the two graphs were on different scales and we did not
+tell the plotregion to adjust its scale.  
+
+{p 4 4 4}{it}
+Plotregions are relatively smart, and are willing to loop through all of the
+plots and adjust their scale to encompass the full range of what is being
+plotted.  They do this with the {cmd:.reset_scales} member program.  (Click
+next 2 commands.){sf}
+
+{p 0 4 0}. {stata .cool.plotregion1.reset_scales}{p_end}
+
+{p 0 4 0}. {stata graph display}
+
+{p 4 4 4}{it}
+That is somewhat better.  Their is nothing inaccurate about this graph.
+Although the axes do not label the full range of values, what is labeled is
+accurate and the plotregion now holds the full range of data.
+
+{p 4 4 4}{it}
+We can tell the axes to reset themselves to a "natural" set of ticks and
+labels, the same ones we would have gotten had we issued a {cmd:graph} command
+with the two plots, with the {cmd:.set_ticks} member program.  (Click the next
+3 commands.){sf}
+
+{p 0 4 0}. {stata .cool.yaxis1.set_ticks}{p_end}
+{p 0 4 0}. {stata .cool.xaxis1.set_ticks}{p_end}
+
+{p 0 4 0}. {stata graph display}
+
+{p 4 4 4}{it}
+That looks pretty good.  There is, however, still one thing missing.  We now
+have two plots, but no legend to identify them.  The original graph suppressed
+the legend, because there was only one plot.  We can use our old friend, the
+{cmd:draw_view} setting, to get inform that legend to draw itself.  (Click the
+2 commands below.){sf}
+
+{p 0 4 0}. {stata .cool.legend.draw_view.set_true}{p_end}
+
+{p 0 4 0}. {stata graph display}
+
+{p 4 4 4}{it}
+Not quite what we wanted.  The original legend knew only about the first plot.
+We can tell it to search through all of its associated plotregions and
+identify all of the plots with the {cmd:.rebuild} member program.  Similarly,
+we can ask it to find nice positions for the keys and labels of those plots by
+issuing the {cmd:.repositionkeys} member program.  To do that, and redisplay
+the graph, click on the following 3 commands.{sf}
+
+{p 0 4 0}. {stata .cool.legend.rebuild}{p_end}
+{p 0 4 0}. {stata .cool.legend.repositionkeys}{p_end}
+
+{p 0 4 0}. {stata graph display}
+
+{p 4 4 4}{it}
+There, we have pulled a plot from one graph to another and told the resulting
+graph how to update itself to properly show the new plot.{sf}
+
+{hline}
+
+{p 4 4 4}{it}
+I should note that the following things are true about the graph we have
+created.{sf}
+
+{p 0 2 0}o Cannot be saved as a {cmd:live} graph{p_end}
+
+{p 0 2 0}o Can be saved as an {cmd:asis} graph
+
+{p 0 2 0}o Can be printed, exported, combined, and copied to clipboard{p_end}
+
+{p 4 4 4}{it}Recall that {cmd:live} graphs contain a "story" of how they were
+created and can be re-schemed when {cmd:graph use}d.  Even had we prefixed all
+of the commands that we used above, this would not be sufficient to make our
+graph a {cmd:live} graph.  It is not possible to turn our new graph into a
+{cmd:live} graph, just beyond the scope of this talk to cover the issues
+involved.{sf}
+
+{hline}
+{p 4 4 4}{it}There is a reason we could so easily pull a plot and its points
+from one graph to another.  The data for plots is stored in sersets.  For more
+information, click the digression below.{sf}
+
+>> {view serset.smcl:{hi:A digression on sersets}}
+
+{hline}
+
+{p 4 4 4}{it}Let's prove that we can save and restore our create as an
+{cmd:asis} graph by clicking the next 3 commands.{sf}
+
+{p 0 4 0}. {stata graph save mygraph , replace asis}
+
+{p 0 4 0}. {stata discard}
+
+{p 0 4 0}. {stata graph use mygraph}
+
+{hline}
+{center:{view combine.smcl:<<}   {view tindex.smcl:index}   {view balbar.smcl:>>}}

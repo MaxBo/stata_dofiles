@@ -1,0 +1,19 @@
+{smcl}
+
+{* 21jun2004}{...}
+	{hi:Stata graphics, under the hood}
+	    {it:A walk down the aisles of the parts store}
+	    {it:A mechanic's catharsis}
+	    {it:An adventure off the paved roads}
+{hline}
+
+		{cmd:Vince Wiggins}
+		{cmd:StataCorp}
+
+
+		{cmd:10th UK Stata Users Group meeting }
+		{cmd:London}
+		{cmd:28 June 2004}
+
+{hline}
+{center:{view tindex.smcl:index}   {view lions.smcl:>>}}

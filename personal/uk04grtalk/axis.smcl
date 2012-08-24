@@ -1,0 +1,141 @@
+{smcl}
+{* 16jun2004}{...}
+{hline}
+{center:{hi:I want another axis on my box plot}}
+{hline}
+
+{p 4 4 4}{it}
+This example came from a question Nick Cox posted on statalist.  Nick wanted to
+add a second X-axis on his horizontal box plot.  {cmd:graph twoway} supports
+multiple X-axes, but {cmd:graph box} and {cmd:graph hbox} do not.{sf}
+
+{p 0 4 0}Original graph{p_end}
+
+{p 4 4 4}{it}
+Let's look at some data and a box plot representative of Nick's problem by
+clicking the next two commands.{sf}
+
+{p 0 4 0}. {stata sysuse census , clear}{p_end}
+{p 0 4 0}. {stata graph hbox medage, over(region, total)}{p_end}
+{hline}
+
+{p 0 4 0}Identify all outliers using standard options{p_end}
+
+{p 4 4 4}{it}
+Nick was mainly concerned with the outside value falling to the right, because
+the two to the left fell within the whiskers of the West region.  Ignoring
+this, we might just decide to label all of the outside values using the
+standard {cmd:marker(... mlabel())} option of {cmd:graph .smcl}.  (Click the
+command below.){sf}
+
+{p 0 4 0}. {stata graph hbox medage, over(region, total) marker(1, mlabel(state) mlabpos(11))}{p_end}
+{hline}
+
+{p 4 4 4}{it}
+That wasn't at all what Nick wanted, and here is Nick's solution using
+standard {cmd:graph} syntax.{sf}
+
+{p 0 4 0}Nick's solution:{p_end}
+{p 4 6 0}	- make room above the graph by specifying an empty subtitle{p_end}
+{p 4 6 0}	- use {cmd:text()} option to place text outside the plotregion
+
+{p 0 4 0}. {stata list state medage if medage > 34}
+
+{p 0 4 0}. {stata graph hbox medage, over(region, total) subtitle(" ") text( 34.7 109 "Florida")}{p_end}
+{hline}
+
+{p 0 4 0}Adding a real axis (foregoing the _gm_edit prefix)
+
+{p 4 4 4}{it}
+That was a very workable solution, but it doesn't do everything an axis could;
+so let's try and get Nick a real axis.  We will not prefix our commands with
+{cmd:_gm_edit} to conserve space.
+
+{p 4 4 4}{it}
+We re-draw the original graph, then insert a new axis and show the
+results by clicking the next 3 commands.{sf}
+
+{p 0 4 0}. {stata graph hbox medage, over(region, total)}
+
+{p 0 4 0}. {stata .Graph.insert (.xaxis2 = .axis.new , position(above)) above plotregion1}
+
+{p 0 4 0}. {stata graph display} 
+
+{p 4 4 4}{it}
+First, we note that there is not much to see, just a new line at the top of
+the plot region, and we clearly have more work to do.  More importantly, there
+is much happening in that {cmd:.Graph.insert} command and we should probably
+take a closer look.
+
+{p 4 4 4}{it}
+Looking first inside the parentheses at 
+{cmd:.xaxis2 = .axis.new , position(above)}, this part of the command pretty
+much does what it says.  It creates a brand new axis and names that axis
+{cmd:.xaxis2}.  The option {cmd:position(above)} merely informs the axis that
+it will be located {cmd:above} rather than {cmd:below} or {cmd:leftof} or
+{cmd:rightof} a plotregion.  In this way the axis know where to point its
+ticks and where to place its labels.  This would be a perfectly good command
+to be issued in the Stata command window, the axis just would not be
+associated with anything.  Instead, the new axis has been immediately inserted
+into our graph ({cmd:.Graph}) using the {cmd:.insert} member function
+of graphs.  The remaining argument, {cmd:above plotregion1}, just tells
+{cmd:.insert} where to put the newly inserted object {c -} above the object
+called {cmd:plotregion1}.
+
+{p 4 4 4}{it}
+So, our graph now contains a new object, an axis, and that axis' full name is
+{cmd:.Graph.xaxis2}.
+
+{p 4 4 4}{it}
+Let's see if we can get that axis to behave the way we want.  Currently the
+axis doesn't know anything about its environment, and vice-versa.  The axis
+doesn't even know what scale its ticks are on.  We can associate our new axis
+and the existing plotregion of the graph using the {cmd:.set_axis_plotregion}
+member program of graphs.  This program informs the plotregion that an axis is
+associated with it and does the same for the axis, while also setting the
+scale of the axis to be that of the associated plotregion.  (Click next 2
+commands.)
+{sf}
+
+{p 0 4 0}. {stata .Graph.set_axis_plotregion xaxis2 plotregion1 x}
+
+. {stata graph display} {right:{stata .Graph.xaxis2.major.use_rule.set_false:rule}}
+
+{p 4 4 4}{it}
+We feel better about our axis, but we need to tell it to do something.  Let's
+add a tick for the Florida outside value using the {cmd:.add_ticks} member
+program on the major tickset of our axis.  Not that the arguments to this
+program are exactly like the {it:values} argument to the standard
+{cmd:xlabel()} and {cmd:.smcl()} options of {cmd:graph}.  That is not a
+coincidence. (Click the next two commands.){sf}
+
+{p 0 4 0}. {stata .Graph.xaxis2.major.add_ticks 34.7 "Florida"}
+
+{p 0 4 0}. {stata graph display}{p_end}
+
+{p 4 4 4}{it}
+Done.  We have a real axis for Nick.{sf}
+
+{hline}
+
+{p 4 4 4}{it}
+We can change the look of our axis, using what we learned
+earlier.  (Click the next 2 commands.)  {sf}
+
+{p 0 4 0}. {stata .Graph.xaxis2.style.editstyle majorstyle(tickstyle(textstyle( color(red) size(large) ))) editcopy}
+
+{p 0 4 0}. {stata graph display} 
+
+{p 4 4 4}{it}
+We can add more labeled ticks and a title to out axis.
+(Click the next 3 commands.)  {sf}
+
+{p 0 4 0}. {stata .Graph.xaxis2.major.add_ticks 26.1 "Alaska" 24.2 "Utah"}
+
+{p 0 4 0}. {stata .Graph.xaxis2.title.text[1] = "States with unusual age distributions"}
+
+{p 0 4 0}. {stata graph display} 
+
+
+{hline}
+{center:{view combine.smcl:<<}   {view tindex.smcl:index}   {view rip_plot.smcl:>>}}

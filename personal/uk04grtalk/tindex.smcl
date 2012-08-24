@@ -1,0 +1,159 @@
+{smcl}
+{* 16jun2004}{...}
+{center:{hi:Index}}
+
+{hline}
+{center:{hi:Slide table of contents}}
+{hline}
+
+o {view cover.smcl:Cover}
+
+o {view lions.smcl:The truth about graphics}
+
+      {c -} {view big.smcl:Size of the graphics system}
+
+
+{hi:Try the {cmd:graph} commands, they may be enough}
+
+{p 4 6 0}
+    o {view new_res.smcl:Resources for those less familiar with {cmd:graph}} (ancillary)
+
+    o {view twoways.smcl:Twoway isn't always}
+
+
+{hi:What is a graph?}
+
+{p 4 6 0}
+    o {view example.smcl:Some example graphs} (ancillary)
+
+{p 4 6 0}
+    o {view what.smcl:What are Stata graphs}
+
+{p 4 6 0}
+    o {view what_cmd.smcl:What is the {cmd:graph} command} (ancillary)
+
+{p 4 6 0}
+    o {view what_sav.smcl:What are saved graphs} (ancillary)
+
+
+{hi:Some concepts and constructs}
+
+{p 4 6 0}
+    o {view class.smcl:A touch of class {c -} quick review} (ancillary)
+
+{p 4 6 0}
+    o {view style.smcl:You gotta have style} (ancillary)
+
+{p 4 6 0}
+    o {view anatomy.smcl:Anatomy of a Graph}
+
+
+{hi:Examples manipulating graphs with {cmd:class} commands}
+
+{p 4 6 0}
+    o {view combine.smcl:Combining graphs with a common legend}
+
+{p 4 6 0}
+    o {view axis.smcl:I want another axis on my box plot}
+
+{p 4 6 0}
+    o {view rip_plot.smcl:I don't have the data}
+
+	{c -} {view serset.smcl:A digression on sersets}
+
+
+{hi:Changing and extending graph commands}
+
+    o {view balbar.smcl:Bar? graphs}
+
+    o {view arrows.smcl:Nick wants arrows}
+
+
+o {view download.smcl:Where is the handout?}
+
+
+{hline}
+{center:{hi:Supporting materials }}
+{hline}
+{p2colset 4 18 19 0}
+
+{hi:Do files}
+
+{p2col:{view alaska.do}}	Produces ocean current graph for Alaska 
+	using our
+	new {cmd:sarrows} plotttype.  Slide: {view arrows.smcl}.
+
+{p2col:{view arr_input.do}}	Support file to input test data for first
+	arrows example.  Slide:  {view arrows.smcl}.
+
+{p2col:{view norm_p95.do}}	Draws normal distribution illustration.  Slide:
+	{view twoways.smcl}.
+
+{p2col:{view pop_pyr.do}}	Draws population pyramid.
+	Slide: {view twoways.smcl}.
+
+{p2col:{view regline_ci.do}}	Draws regression line with CI density 
+	illustration.  Slide: {view twoways.smcl}.
+
+
+{hi:Ado files}
+
+{p2col:{view anatomy.ado}}	Draws full "anatomy of a graph" graph
+	Slide: {view anatomy.smcl}.
+
+{p2col:{view anatomy0.ado}}	Draws initial "anatomy of a graph" graph
+	Slide: {view anatomy.smcl}.
+
+{p2col:{view anatomy1.ado}}	Draws simplified "anatomy of a graph" graph
+	Slide: {view anatomy.smcl}.
+
+{p2col:{view yxview_sarrows_draw.ado}}	Implements drawing program for
+	our new {cmd:sarrows} plotttype.
+	Slide: {view arrows.smcl}.
+
+{hi:Classes}
+
+{p2col:{view balbargraph_g.class}}	Implements our {cmd:balbar} graph 
+	family.
+	Slide: {view balbar.smcl}.
+
+{p2col:{view stbargraph_g.class}} 	Implements our {cmd:stbar} graph
+	family.
+	Slide: {view balbar.smcl}.
+
+
+{hi:Styles}
+
+{p2col:{view yxtype-sarrows.style}}	Required .style file for our
+	{cmd:yxtype} plottype.
+	Slide: {view arrows.smcl}.
+
+
+{hi:Graphs}
+{p2col:{stata graph use boxhist2.gph}}	Histograms with box plots graph.
+	Slide: {view twoways.smcl}.
+
+{p2col:{stata graph use cool.gph}}	Cooling degree days scatterplot.
+	Slide: {view rip_plot.smcl}.
+
+{p2col:{stata graph use heat.gph}}	Heating degree days scatterplot.
+	Slide: {view rip_plot.smcl}.
+
+{p2col:{stata graph use parp_v.gph}}	Parallel coordinates graph.
+	Slide: {view twoways.smcl}.
+
+{p2col:{stata graph use triplot_us.gph}} Triplot graph.
+	Slide: {view twoways.smcl}.
+
+
+{hi:Datasets}
+
+{p2col:{stata use alaska.dta:alaska.dta}}	Data for the Alaska ocean
+	current graphs.
+	Slide: {view arrows.smcl}.
+
+{p2col:{stata use anatomy.dta:anatomy.dta}}	Data for the "anatomy of 
+	a graph" graph.
+	Slide: {view anatomy.smcl}.
+
+{hline}

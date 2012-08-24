@@ -1,0 +1,15 @@
+{smcl}
+{* 21jun2004}{...}
+{hline}
+{center:{hi:What are saved graphs}}
+{hline}
+
+{p 0 2 0}o Data for the graph, see [P] serset
+
+{p 0 2 0}o Log of commands to recreate the graph {c -} a story
+
+{p 0 2 0}o Sundry information to identify the graph
+
+
+{hline}
+{center:{view what.smcl:<<}   {view tindex.smcl:index}}

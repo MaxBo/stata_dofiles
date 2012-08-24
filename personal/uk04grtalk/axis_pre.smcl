@@ -1,0 +1,28 @@
+{smcl}
+{* 19jun2004}{...}
+{hline}
+{center:{hi:I want another axis on my box plot}}
+{hline}
+
+{p 0 2 0}o Question from Nick Cox on Statalist
+
+{p 0 2 0}o One outlier among outside values that he wanted to identify
+
+{p 0 4 0}o Original problem graph{p_end}
+{p 0 4 0}. {stata sysuse census , clear}{p_end}
+{p 0 4 0}. {stata graph hbox medage, over(region, total)}
+
+{p 0 4 0}o Identify all outliers using standard options{p_end}
+{p 0 4 0}. {stata graph hbox medage, over(region, total) marker(1, mlabel(state) mlabpos(11))}
+
+{p 0 4 0}o Nick's solution:{p_end}
+{p 4 6 0}	- make room above the graph by specifying an empty subtitle{p_end}
+{p 4 6 0}	- use {cmd:text()} option to place text outside the plotregion
+
+{p 0 4 0}. {stata list state medage if medage > 34}
+
+{p 0 4 0}. {stata graph hbox medage, over(region, total) subtitle(" ") text( 34.7 109 "Florida")}
+
+
+{hline}
+{center:{view anatomy.smcl:<<}   {view tindex.smcl:index}   {view axis.smcl:>>}}

@@ -1,0 +1,137 @@
+{smcl}
+{* 22jun2004}{...}
+{hline}
+{center:{hi:Nick wants arrows}}
+{hline}
+
+{p 4 4 4}{it}
+Nick Cox has asked me several times 
+about the ability to draw arrows in {cmd:twoway} 
+graphs.  This seems like a perfect excuse to learn another secret, this 
+time about {cmd:twoway} plottypes.{sf}
+
+{hline}
+
+{p 0 2 0}A secret about {cmd:graph twoway}{p_end}
+
+{p 4 6 0}	o designed to find properly named files and use 
+		  them just like official {cmd:twoway} 
+		  plottypes {p_end}
+
+{p 4 6 0}	o at a minimum {cmd:twoway} needs to find:{p_end}
+{p 8 10 0}		{cmd:yxtype_}{it:<our_plot>}{cmd:.style}{p_end}
+{p 6 6  0}	    and{p_end}
+{p 8 10 0}		{cmd:yxtype_}{it:<our_plot>}{cmd:_draw.ado}{p_end}
+
+{hline}
+{p 4 4 4}{it}
+We can leverage that information to create a new {cmd:twoway} plottype, one 
+that places arrows at the ends of lines.
+
+{p 4 4 4}{it}
+There are a number of ways to add plottypes to {cmd:twoway} with the simplest 
+requiring only two files {c -} a properly named ado 
+program to draw the plots and
+a .style file that telling {cmd:twoway} that our new plottype exists.  Let's
+look first at the .style file by clicking on {view yxtype-sarrows.style} below.
+This file contains a single line, and even that is not required, the file
+could be empty.  The sequence number merely tells the graphics system
+where to place the style name in any dialog box controls in which it may
+need to appear.
+
+{p 4 4 4}{it}
+Unlike {cmd:graph bar}, which required us to create a new class file, 
+adding a new plottype to {cmd:twoway} only requires an ado-file to draw the 
+plots.  We will call our new plottype {cmd:sarrows} with the {cmd:s}
+standing for simple or perhaps sequential.  Click on 
+{view yxview_sarrows_draw.ado} below to see our new ado-file.{sf}
+
+{hline}
+
+{p 0 26 0}{view yxview_sarrows_draw.ado} {c -} an ado program to draw our 
+	plot type
+
+{p 0 26 0}{view yxtype-sarrows.style} {space 3}{c -} a style file that signals 
+	{cmd:twoway} that our plot type exists.
+
+{hline}
+
+{p 4 4 4}{it}
+Again, we will not delve into the drawing program in detail, but like
+the drawing programs for {cmd:graph balbar} and {cmd:graph stbar} it uses
+low-level {cmd:gdi} calls to draw our lines and arrows.
+
+{p 4 4 4}{it}
+Our new plottype expects two variables, a Y and X-variable.  It connects
+sequential (Y,X) observations and draws an arrowhead at the end whenever
+an observation is encountered that is missing either the Y or X value.
+
+{p 4 4 4}{it}
+Let's input some data to test our new plottype.  (Click on the
+{stata drop _all} and {stata do arr_input:input  y  x} links below.  Then,
+click on the {stata twoway sarrows y x} to draw the arrows.  You can
+see that our new {cmd:sarrows} plottype is used just like all of 
+{cmd:twoway}s native plottypes (e.g., {cmd:scatter} or {cmd:line}).{sf}
+
+{hline}
+
+. {stata drop _all}
+. {stata do arr_input:input  y  x}
+.	{cmd: 0   0}
+.	{cmd: 1   1}
+.	{cmd: .   .}
+.	{cmd: 0   0}
+.      {cmd: -1   1}
+. {cmd: end}
+
+. {stata twoway sarrows y x}
+
+{hline}
+
+{p 4 4 4}{it}
+Well, that looks just fine.  
+
+{p 4 4 4}{it}
+Let's try a more more complicated example
+by clicking on the next 4 commands.{sf}
+
+. {stata drop _all}
+. {stata set mem 20m}
+. {stata use alaska}
+
+. {stata do alaska} {right:{view alaska.do:do-file}}
+
+{hline}
+
+{p 4 4 4}{it}
+The outline of Alaska took a bit to draw because it has almost 60,000 points
+in almost 800 polygons.  Even so, by clicking on 
+{right:{view alaska.do:do-file}} we can see that the state was drawn with a
+single {cmd:area} plot.  We can also see that our ocean current vectors were
+drawn as a single {cmd:sarrows} plot, using our new plottype.
+
+{p 4 4 4}{it}
+The command looks rather daunting because
+we included lots of options to get colors and scaling pleasant, but the 
+underlying command is quite simple.  The command includes an {cmd:if}
+qualifier to clean up the data
+because there are a few too many points in the polygon of the main
+body of Alaska and because each polygon also includes its center point.{sf}
+
+{p 4 4 4}{it}
+Keeping the {cmd:if}, but ignoring the other options, our {cmd:twoway} graph
+command can be stripped down to a simple {cmd:area} plot and {cmd:sarrow}
+plot.{sf}
+
+{p 0 2 0}. {stata twoway area latitude longitude if !cpoint & (poly != 1 | mod(_n,5)==0) , nodropbase  cmissing(no) || sarrows lat_v long_v}
+
+{hline}
+
+{p 4 4 4}{it}
+That's about all we have time for.  We have just scratched the surface of what
+lies beneath the {cmd:graph} command.  This level will remain undocumented for
+now, but we hopefully have a better understanding of the structure of Stata's
+graphs and we have learned a few "secrets" that we can may find useful.
+
+{hline}
+{center:{view balbar.smcl:<<}   {view tindex.smcl:index}   {view download.smcl:>>}}

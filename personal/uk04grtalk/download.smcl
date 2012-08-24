@@ -1,0 +1,28 @@
+{smcl}
+{* 24jun2004}{...}
+{hline}
+{center:{hi:Where is the handout?}}
+{hline}
+
+{p 4 4 4}{it}
+If you are reading this in Stata, that you have probably already downloaded
+the materials for the talk, but if you instead you are reading from a
+hard-copy or other form, here is how to download this talk from within Stata.
+{sf}
+
+{hline}
+
+{p 0 2 0}. {cmd:net from http://www.stata.com/users/vwiggins}
+
+{p 0 2 0}. {cmd:net describe uk04}
+
+{p 0 2 0}. {cmd:net install uk04}
+
+
+{hline}
+
+{p 4 4 4}{it}Once downloaded, type {stata whelp ukgrtalk} for more information.
+{sf}
+
+{hline}
+{center:{view arrows.smcl:<<}   {view tindex.smcl:index}}

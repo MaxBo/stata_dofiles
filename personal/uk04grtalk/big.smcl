@@ -1,0 +1,25 @@
+{smcl}
+{* 21jun2004}{...}
+{hline}
+{center:{hi:Size of the graphics system}}
+{hline}
+
+
+     46 ado files
+
+    221 class files
+
+     20 scheme files
+
+    748 style files
+
+Total programs and class member programs:  1,306
+
+Total lines of code:  51,268  
+(not counting C code)
+
+And, every component is extensible.
+
+
+{hline}
+{center:{view lions.smcl:<<}   {view tindex.smcl:index}}

@@ -1,0 +1,44 @@
+{smcl}
+{* 24jun2004}{...}
+{hline}
+{center:{hi:You gotta have style}}
+{hline}
+
+{p 0 2 0}o Almost every object that is drawn has a .style{p_end}
+
+{p 4 6 0}	- lines {space 1}{c -} {help linestyle:{it:linestyle}}{p_end}
+
+{p 4 6 0}	- titles {c -} {help textboxstyle:{it:textboxstyle}}{p_end}
+
+{p 4 6 0}	- grids {space 1}{c -} {help gridstyle:{it:gridstyle}}{p_end}
+
+{p 4 6 0}	- many objects {c -} {help colorstyle:{it:colorstyle}}{p_end}
+
+{p 4 6 0}	- ...
+
+{p 0 2 0}o You are familiar with these, they are the styles 
+	   documented in [G]{p_end}
+{hline}
+
+{p 0 2 0}o Some styles are composite styles {c -} that is they contain 
+	   other styles, e.g., every {help linestyle:{it:linestyle}} contains: 
+
+{p 4 6 0}	- {help colorstyle:{it:colorstyle}}
+
+{p 4 6 0}	- {help linewidthstyle:{it:linewidthstyle}}
+
+{p 4 6 0}	- {help linepatternstyle:{it:linepatternstyle}}{p_end}
+{hline}
+
+{p 0 2 0}o We refer to nested objects such as composite styles as one long
+name with dots between the objects {c -} think C structures
+
+{p 4 6 0}	{cmd:.myline.style.color}
+
+{p 4 6 0}	{cmd:.mygraph.legend.style.labelstyle.color}
+
+{p 4 6 0}	{cmd:.mygraph.legend.style.labelstyle.size}
+
+
+{hline}
+{center:{view what.smcl:<<}   {view tindex.smcl:index}}

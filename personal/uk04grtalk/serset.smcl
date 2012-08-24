@@ -1,0 +1,51 @@
+{smcl}
+{* 21jun2004}{...}
+{hline}
+{center:{hi:A digression on sersets}}
+{hline}
+
+{p 4 4 4}{it}
+The underlying data for plots in Stata's graphics are stored in {cmd:serset}s
+and these data can be accessed using the {cmd:serset} command, see 
+help {help serset}.
+
+{p 4 4 4}{it}
+We can see a directory of all of the sersets underlying all of the graphs in
+memory (we currently have two graphs), using {cmd:serset dir}.  (Click the
+command below).{sf}
+
+{p 0 4 0}. {stata serset dir}
+
+{p 4 4 4}{it}
+Looking in the command window we see that we have two sersets, numbers 0 and
+1, and that both sersets have 955 observations with the 0th serset
+containing variables {cmd:heatdd} and {cmd:tempjan} and the 1st serset
+containing variables {cmd:cooldd} and {cmd:tempjuly}. {sf}
+
+{p 4 4 4}{it}
+Let's use the {cmd:serset set} command to make the 0th serset current, then
+use the {cmd:serset use} command to use the data from the serset and make it
+our current dataset.{sf}
+
+{p 0 4 0}. {stata serset set 0}
+
+{p 0 4 0}. {stata serset use , clear}
+
+{p 4 4 4}{it}
+If we now list our data, we see that our dataset is now the data used to
+create the {cmd:heattdd} vs. {cmd:tempjan} plot.{sf}
+
+{p 0 4 0}. {stata list}
+
+{p 4 4 4}{it}
+We can do the same for the 1st serset, the one that holds the data for the
+{cmd:cooldd} vs. {cmd:tempjuly} plot.{sf}
+
+{p 0 4 0}. {stata serset set 1}{p_end}
+{p 0 4 0}. {stata serset use , clear}{p_end}
+{p 0 4 0}. {stata list}{p_end}
+
+See, [P] sersets for managing sersets
+
+{hline}
+{center:{view rip_plot.smcl:<<<}   {view tindex.smcl:index}   }

@@ -1,0 +1,142 @@
+{smcl}
+{* 22jun2004}{...}
+{hline}
+{center:{hi:Combining graphs with a common legend}}
+{hline}
+
+{p 0 4}
+A simple example {c -} mainly {cmd:graph} commands with a dash of
+graphics object manipulation
+
+{p 4 4 4}{it}
+A common question is, "Can I combine graphs, but have a single, common legend
+instead of each graph showing its own legend?".  {cmd:graph combine} can't do
+this, however, with our newfound tricks, we can.{sf}{p_end}
+{hline}
+
+{p 0 2 0}A standard {cmd:graph combine}
+
+{p 4 4 4}{it}
+First, let's do a standard {cmd:graph combine} of two graphs whose legend's
+show the same information.  (Click the following 5 commands.){sf}
+
+{p 0 4 0}. {stata sysuse citytemp , replace}{p_end}
+
+{p 0 4 0}. {stata capture graph drop jan july}
+
+{p 0 4 0}. {stata scatter cooldd heatdd tempjan  , name(jan)}{p_end}
+
+{p 0 4 0}. {stata scatter cooldd heatdd tempjuly , name(july)}
+
+{p 0 4 0}. {stata graph combine jan july}{p_end}
+
+{p 4 4 4}{it}
+That was what we expected.  Let's drop the named graphs jan and july so we can
+reuse the names. (Click the following command.){sf}
+
+{p 0 4 0}. {stata graph drop jan july}{p_end}
+{hline}
+{p 4 4 4}{it}
+
+{p 0 2 0}Create graphs without legends and combine them
+
+{p 4 4 4}{it}
+Below, we have added the {cmd:legend(off)} option to our original scatters to
+turn of the display of the legends.  We then combine these graphs, being sure
+they are on a single row and naming the resulting combined graph {cmd:two}.
+(Click the next three commands.)  {sf}
+
+{p 0 4 0}. {stata scatter cooldd heatdd tempjan  , legend(off) name(jan)}
+
+{p 0 4 0}. {stata scatter cooldd heatdd tempjuly , legend(off) name(july)}
+
+{p 0 4 0}. {stata graph combine jan july   , rows(1) name(two)}
+
+
+{p 0 2 0}Create a legend without a "graph"
+
+{p 4 4 4}{it}
+That's nice {c -} Stata let us create graphs without legends and combine them.
+Now if only Stata would let us create legends without "graphs" we would be in
+business.  The graph command won't let us do this, but we can do it directly
+through the graphics objects.
+
+{p 4 4 4}{it}
+First, turn off everything the {cmd:scatter} command will allow by setting the
+axes not to draw {c -} options {cmd:yscale(off)} and {cmd:xscale(off)} and
+name our graph {cmd:leg_graph}. (Click the command below.){sf}
+
+{p 0 4 0}. {stata scatter cooldd heatdd tempjan , yscale(off) xscale(off) name(leg_graph)}
+
+{p 4 4 4}{it}Now, if only we could get rid of the plotregion.  It turns out
+that almost all drawn objects have a setting {cmd:.draw_view} that can be
+turned on and off.  In fact, the {cmd:yscale(off)} and {cmd:xscale(off)}
+options did nothing more than switch this setting to off (false).  We can do
+that by hand for the plotregion.  Let's switch that setting to false for the
+plotregion, minding recording our edit with {cmd:_gm_edit}.  Note the name of
+our object begins with {cmd:.leg_graph} and not {cmd:.Graph} because we named
+this graph.(Click the next two commands.){sf}
+
+{p 0 4 0}. {stata _gm_edit .leg_graph.plotregion1.draw_view.set_false}
+
+{p 0 4 0}. {stata graph display}
+
+{p 0 2 0}Make the legend "graph" non-stretchable
+
+{p 4 4 4}{it}
+That's good, but our {cmd:leg_graph} still thinks it is a full graph.  When
+graphs are combined, they all expand or contract so that they each take up an
+equal amount of space.  We don't want our legend graph to do this because it
+doesn't need as much space as our real graphs.  The legend has a natural
+height determined by the font size, key size, and number and position of the
+keys; it doesn't need to expand to fill space.  We can tell our legend graph
+not to stretch in the Y-dimension, by changing its {cmd:.ystretch} setting.
+This setting is not a style and is changed by the {cmd:.set} member function.
+We will change the setting to fixed.  (Click the next two commands.){sf}
+
+{p 0 4 0}. {stata _gm_edit .leg_graph.ystretch.set fixed}
+
+{p 0 4 0}. {stata graph display}
+
+{p 0 2 0}Combine our legend-only "graph" onto the already combined graph
+
+{p 4 4 4}{it}
+Now we can use the standard {cmd:graph combine} command to combine our
+legend-only graph onto our previously created combined graph without legends,
+being sure to stack the the two graphs in a single column with the legend_only
+graph on the bottom.  (Click the command below.){sf}
+
+{p 0 4 0}. {stata graph combine two leg_graph , cols(1)}{p_end}
+{hline}
+
+{p 4 4 4}{it}
+Though we are new making changes directly in the graphics classes and that
+took a while to explain, note that we used only two rather short graphics
+class commands and the remainder of our work was done using standard
+{cmd:graph} commands.  
+
+{p 4 4 4}{it}
+We could have made the graph somewhat prettier my setting some of the margins
+to {cmd:zero} in the original graphs and combines, but we were aiming more for
+clarity than looks.{sf}
+
+{p 0 2 0}The legend size is not really fixed
+
+{p 4 4 4}{it}
+A better word for {cmd:fixed} when we set the Y-stretchability of our graph
+would have been "non-stretchable".  We did not fix the size in the
+Y-dimension, instead we set the graph to take up "as much room as needed".  We
+can see this by expanding the font size for legend's key labels.  (Click the
+next two commands.){sf}
+
+{p 0 4 0}. {stata _gm_edit .Graph.plotregion1.graph2.legend.style.editstyle labelstyle(size(vlarge)) editcopy}
+
+{p 0 4 0}. {stata graph display}
+
+{p 4 4 4}{it}
+Note that what we have created is a complete graph able to interact be
+{cmd:save}d, {cmd:use}d, or even further {cmd:combine}d.  It can even be
+re-schemed or further hand-edited.  It is in every way a Stata graph.{sf}
+
+{hline}
+{center:{view anatomy.smcl:<<}   {view tindex.smcl:index}   {view axis.smcl:>>}}

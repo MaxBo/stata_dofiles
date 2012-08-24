@@ -1,0 +1,66 @@
+{smcl}
+{* 21jun2004}{...}
+{hline}
+{center:{hi:Twoway with data manipulation can be flexible}}
+{center:{hi:{it:(and isn't always 2 ways)}}}
+{hline}
+
+o Hand drawn box and histogram plots {right:{stata graph use boxhist2:use}         }
+
+o Parallel coordinates {right:{stata graph use parp_v:use}         }
+
+o Distribution illustrations {right:{stata do norm_p95:do}  {view norm_p95.do:do-file}}
+
+o Regression illustration {right:{stata do regline_ci:do}  {view regline_ci.do:do-file}}
+
+o Population pyramid {right:{stata do pop_pyr:do}  {view pop_pyr.do:do-file}}
+
+o {cmd:twoway}? {right:{stata graph use triplot_us:use}         }
+
+{hline}
+{p 4 4 4}{it}
+Note:  click on the {stata *:use} or {stata *:do} links to see the graphs,
+click on the {stata *:do-file} links to see the {cmd:graph} commands.{p_end}
+
+{p 4 4 4}{it}
+The "box and histogram" was created by Nick Cox using his {cmd:tabplot}
+program.  The "parallel coordinates" plot was created with Nick Cox's
+{cmd:parplot} program.  The "{cmd:twoway}?" plot was created with Nick Cox's
+{cmd:triplot} program.  All three of Nick's programs are available from the
+SSC archives.  Just type {cmd:findit triplot} (or one of the other program
+names) to locate the program.  The remaining graphs are "simple" {cmd:twoway}
+commands which can be seen by clicking {stata *:do-file}{p_end}
+
+{p 4 4 4}{it}
+With all of this flexibility and legitimate concerns, why open Pandora's box
+and discuss the internals of graphics now?{p_end}
+
+{p 6 9 4}{it}
+First, I wanted to talk about something new and, as we can see, many are
+already discovering the flexibility of {cmd:twoway}.  In fact, they have
+surprised me and taught me new tricks.{p_end}
+
+{p 6 9 4}{it}
+Second, we believe that things are stable enough that the things I am going to
+show you will continue to work, even though they will remain undocumented.
+
+{p 6 9 4}{it}
+Third, and most important, these facilities are cool; and I wanted to talk
+about them before another developer beat me to the punch.
+
+{p 4 4 4}{it}
+I do not expect everyone to immediately start developing new graphs with the
+information from this talk.  We will at best scratch the surface of just a few
+aspects of the graphics facilities.  I do expect a few people to surprise me by
+using these facilities in unexpected ways.  I also expect everyone will learn
+a few useful tricks and gain a better understanding of the structure of Stata
+graphics.
+
+{p 4 4 4}{it}
+If all of this sounds beyond what you want to hear about graphics, I recommend
+beginning with the following resources.{sf}
+
+    {view new_res.smcl:>>Resources for those less familiar with {cmd:graph}} (ancillary)
+
+{hline}
+{center:{view lions.smcl:<<}   {view tindex.smcl:index}   {view what.smcl:>>}}
