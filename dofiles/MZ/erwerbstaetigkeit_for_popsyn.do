@@ -1,13 +1,13 @@
-global MZ "O:\MZ\Daten\2006"
+Ôªøglobal MZ "O:\MZ\Daten\2006"
 use "$MZ\mz2006.dta", clear
-// ERWERBSTƒTIGKEIT
+// ERWERBST√ÑTIGKEIT
 // Datensatz: mz2006.dta 
 // Quelle: GESIS - Mikrozensus 2006
 // Autor: Thiago Guimaraes
 // Zustand: 23.08.2012 
 
 drop if EF5b == 1
-// EF30?? Bevˆlkerung am Hauptwohnsitz
+// EF30?? Bev√∂lkerung am Hauptwohnsitz
 
 // AGEGRP (age groups)
 clonevar agegrp = EF44
@@ -35,7 +35,7 @@ clonevar pers_hh = EF20
 
 // BUNDESLAND
 // EF1 Land der Bundesrepublik
-// EF563 Gemeindegrˆﬂenklassen
+// EF563 Gemeindegr√∂√üenklassen
 clonevar bl = EF1
 recode bl (1 2 3 4 5 7 10 11 12 13 14 16 = 17)
 recode bl (6 = 2) (8 = 13) (9 = 3) (17 = 0) (15 = 1)
@@ -45,11 +45,11 @@ gen bl_gg = .
 replace bl_gg = 10*bl + EF563
 recode bl_gg (137=133) (1/9=0)
 
-label define bl_gg 11 "SH" 12 "Hamburg" 13 "Hamburg" 14 "Hamburg" 15 "Hamburg (>500T)" 21 "Mecklenburg-Vorpommern (<5T)" 22 "Mecklenburg-Vorpommern (5T-20T)" 23 "Mecklenburg-Vorpommern (20T-100T)" 24 "Mecklenburg-Vorpommern" 25 "Mecklenburg-Vorpommern" 31 "Niedersachsen (<5T)" 32 "Niedersachsen (5T-20T)" 33 "Niedersachsen (20T-100T)" 34 "Niedersachsen (100T-500T)" 35 "Niedersachsen (>500T)" 4 "sonstiges Bundesland, irgendwelche Grˆsse", replace
+label define bl_gg 11 "SH" 12 "Hamburg" 13 "Hamburg" 14 "Hamburg" 15 "Hamburg (>500T)" 21 "Mecklenburg-Vorpommern (<5T)" 22 "Mecklenburg-Vorpommern (5T-20T)" 23 "Mecklenburg-Vorpommern (20T-100T)" 24 "Mecklenburg-Vorpommern" 25 "Mecklenburg-Vorpommern" 31 "Niedersachsen (<5T)" 32 "Niedersachsen (5T-20T)" 33 "Niedersachsen (20T-100T)" 34 "Niedersachsen (100T-500T)" 35 "Niedersachsen (>500T)" 4 "sonstiges Bundesland, irgendwelche Gr√∂sse", replace
 label values bl_gg bl_gg
 
-// WOHNFLƒCHE - categories
-// EF492 Wie groﬂ ist die Wohnfl‰che der gesamten Wohnung?
+// WOHNFL√ÑCHE - categories
+// EF492 Wie gro√ü ist die Wohnfl√§che der gesamten Wohnung?
 clonevar wfl = EF492
 sum EF492, d
 recode wfl (0/30 = 1) (31/40 = 2) (41/50 = 3) (51/60 = 4) (61/70 = 5) (71/80 = 6) (81/90 = 7) (91/100 = 8) (101/110 =9) (111/120 = 10) (121/130 = 11) (131/140 = 12) (141/150 = 13) (151/180 = 14) (181/1000 = 15) 
@@ -65,16 +65,16 @@ gen wfl_pk = EF492 / EF637
 // EF38 is subdivision of EF29
 clonevar erwerb = EF38
 recode erwerb (1 3 = 1) (4 5 12 13 = 3) (2 6/10 14 15 = 2) (16 19 20 = 4) (17 18 21 = 5) (22 = 6)
-label define erwerb 1 "[1] Erwerbst‰tige (inkl. WZD)" 2 "[2] gleich (wieder) Erwerbst‰tige" 3 "[3] Erwerbslose/Arbeitsuchender" 4 "[4] Nichterwerbsperson (keine Suche)" 5 "[5] Nichterwerbsperson (Rentner o. ‰.)" 6 "[6] Nichterwerbsperson (Kind)", replace
+label define erwerb 1 "[1] Erwerbst√§tige (inkl. WZD)" 2 "[2] gleich (wieder) Erwerbst√§tige" 3 "[3] Erwerbslose/Arbeitsuchender" 4 "[4] Nichterwerbsperson (keine Suche)" 5 "[5] Nichterwerbsperson (Rentner o. √§.)" 6 "[6] Nichterwerbsperson (Kind)", replace
 label values erwerb erwerb
 tab erwerb EF38, m
 
 recode EF38 (1/3 6/10 = 1) (4 5 12 13 = 2) (14/22 = 3), gen(erwerb3)
-label define erwerb3 1 "[1] Erwerbst‰tige (inkl. WZD)" 2 "[2] Arbeitslose" 3 "[3] Nichterwerbsperson" 
+label define erwerb3 1 "[1] Erwerbst√§tige (inkl. WZD)" 2 "[2] Arbeitslose" 3 "[3] Nichterwerbsperson" 
 label values erwerb3 erwerb3
 
-// Modell Erwerbtst‰tig/AL/NE
-// F¸r Simulation zu differenzieren nach EW_M/W und AL 1525-AL2555-AL5565 (NE als Referenzkategorie
+// Modell Erwerbtst√§tig/AL/NE
+// F√ºr Simulation zu differenzieren nach EW_M/W und AL 1525-AL2555-AL5565 (NE als Referenzkategorie
 
 
 gen kk01 = EF44<=1
@@ -105,10 +105,10 @@ outreg2 using "D:\Modell\sim\params\erwerbst_al_ne.txt", bdec(5) tdec(5) noparen
 
 
 
-// DIFFERENZIERUNG DER ERWERBSTƒTIGE:
+// DIFFERENZIERUNG DER ERWERBST√ÑTIGE:
 
-// EF84 Erwerbst‰tigkeit in der Berichtswoche
-// Umkodierung: Erwerbst‰tigkeit in der Berichtswoche (Erwerbst‰tige, Mithelfende Familienangehˆrige, gelegentlicher Zuverdienst in der Berichtswoche, geringf¸gig Besch‰ftigte sollen nur f¸r "ET" verf¸gbar sein, Mutterschutz < 3, Mutterschutz > 3 und Sonstige NET sollen f¸r "gleich ET" verf¸gbar sein)
+// EF84 Erwerbst√§tigkeit in der Berichtswoche
+// Umkodierung: Erwerbst√§tigkeit in der Berichtswoche (Erwerbst√§tige, Mithelfende Familienangeh√∂rige, gelegentlicher Zuverdienst in der Berichtswoche, geringf√ºgig Besch√§ftigte sollen nur f√ºr "ET" verf√ºgbar sein, Mutterschutz < 3, Mutterschutz > 3 und Sonstige NET sollen f√ºr "gleich ET" verf√ºgbar sein)
 recode erwerb (2=1) if EF84 == 1
 recode erwerb (2=1) if EF84 == 3
 recode erwerb (2=1) if EF84 == 4
@@ -118,9 +118,9 @@ tab erwerb EF84
 
 gen etaetig = EF84 if erwerb == 1
 
-// STELLUNG IM BERUF: Selbst‰ndiger, Mithelfender, Beamter, Angestellter, Arbeiter, Azubi, ZWD...
-// EF117 Stellung im Beruf (gegenw‰rtige T‰tigkeit)
-// Umkodierung: Stellung im Beruf soll nur f¸r "ET" oder "gleich ET" verf¸gbar sein
+// STELLUNG IM BERUF: Selbst√§ndiger, Mithelfender, Beamter, Angestellter, Arbeiter, Azubi, ZWD...
+// EF117 Stellung im Beruf (gegenw√§rtige T√§tigkeit)
+// Umkodierung: Stellung im Beruf soll nur f√ºr "ET" oder "gleich ET" verf√ºgbar sein
 recode erwerb (3 4 5 = 1) if EF117 < .
 tab erwerb EF117 
 
@@ -131,7 +131,7 @@ recode hours (0/10 = 1) (11/20 = 2) (21/30 = 3) (31/40 = 4) (41/50 = 5) (51/100 
 label define hours 1 "0/10" 2 "11/20" 3 "21/30" 4 "31/40" 5 "41/50" 6 "51/100", replace
 label values hours hours
 
-// VOLLZEIT-/TEILZEITTƒTIGKEIT
+// VOLLZEIT-/TEILZEITT√ÑTIGKEIT
 // EF129
 
 tab hours EF129 // Definition: ab 32 Stunden Vollzeit
@@ -152,13 +152,12 @@ mlogit erwerb2_a i.agegrp female pers_hh dichte i.bl_gg if agegrp > 1, base(1)
 outreg2 using "C:\Thiago\ELAN\MZ\etaetig\results\model1.txt", bdec(5) tdec(5) noparen noaster replace
 
 // MODEL 2
-// Welche ist die Erwerbst‰tigkeit (Erwerbst‰tige, Mithelfende Familienangehˆrige, gelegentlicher Zuverdienst in der Berichtswoche, geringf¸gig Besch‰ftigte) der Erwerbst‰tigen?
+// Welche ist die Erwerbst√§tigkeit (Erwerbst√§tige, Mithelfende Familienangeh√∂rige, gelegentlicher Zuverdienst in der Berichtswoche, geringf√ºgig Besch√§ftigte) der Erwerbst√§tigen?
 // mlogit EF84 i.agegrp female alone pers_hh i.bl_gg if erwerb_a == 1, base(5)
 mlogit EF84 i.agegrp female pers_hh i.bl_gg if erwerb_a == 1 & (agegrp > 1 & agegrp <= 12), base(1)
 
 
 
-drop stellung
 recode EF117 (1=1 "s_o_b") (2=2 "s_m_b") (3=3 "mhfam") (4 9 =4 "beamte") (5/6 10/11 = 5 "angest") (7/8=7 "azubi"), gen(stellung)
 
 constraint define 1 [azubi]10.agegrp#0b.female = 0
