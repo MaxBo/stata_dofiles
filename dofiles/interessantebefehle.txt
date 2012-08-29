@@ -1,0 +1,24 @@
+Beispiele für Auswertungen
+
+bysort HHID PID: egen Anz_Arbeit= total(Zweck==2) --> gibt die Anzahl der Wege für eine Person an, die ein bestimmtes Kriterium erfüllen
+
+tab HP_ALTG1, gen (AG) --> generiert jeweils eine neue Variable je Klasse der betrachteten Variable
+
+Bei Regressionen sollte immer eine Bezugsvariable gewählt werden. Alle Ergebnisse beziehen sich auf diese Klasse. Ausprägungen sollten binomial sein.
+Bsp. einer Poissonregression
+poisson Anz_zurArbeit BVollzeit BTeilzeit BAzubi BStudi HP_SEX AG4 AG5 AG6 AG7 AG8  HHTYP1  HHTYP2 HHTYP3 HHTYP4 HHTYP5 HHTYP6 HHTYP7 HHTYP8 HHTYP9 HHTYP10 HHTYP11 if  WID==1
+Bsp. einer negativen Binomialregression
+nbreg  Anz_Einkauf_b  HP_SEX    AG3 AG4 AG5 AG6 AG7 AG8 AG9  if  WID==1, dispersion (mean)
+
+danach der Zusammenhang zweier Variablen auf Signifikanz mit bspw.
+
+test AG5=AG7
+
+überprüft werden
+
+Eine andere Möglichkeit besteht darin mit dem predict-Befehl die Güte der Schätzung zu testen
+
+ 
+ Bsp:
+ 
+ nbreg   WEGKM_K  POLGK_2 POLGK_3 POLGK_4 POLGK_5 POLGK_6 if bearbeitet!=5 &einkauf_per==1&BerufVoll==1 &  WID==1 [iw=W_GEW], dispersion (mean)

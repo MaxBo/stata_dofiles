@@ -1,0 +1,25 @@
+set more off
+
+use "X:\Daten\KiD_MiD_ internerGebrauch\MiD2008\Daten\STATA\STATA_Zusatzfile\MiD2008_Zusatzfile_Wege.dta" 
+
+* Definition von Wegen mit Zweck Urlaub: Hin- und Rückweg
+gen urlaub =  (w04_dzw==708 | w04_dzw==709) & (s02_1==1 | s02_2==1)
+replace urlaub = 1 if w04==8 & (s02_1==1 | s02_2==1)
+
+* Definition des Werktags
+gen werktag = stichtag<6
+
+* Zuspielung weiterer Informationen aus dem Personendatensatz zur Validierung der Pkw-Fahrereigenschaft
+merge m:1 hhid pid using "X:\Daten\KiD_MiD_ internerGebrauch\MiD2008\Daten\STATA\STATA_Zusatzfile\MiD2008_Zusatzfile_Personen.dta", keepusing(p11 p13 p061_3)
+
+
+* Definition von Pkw-Fahrern
+gen pkwfahrer = w05_5==1 & (w061==1 | w061==3)
+replace pkwfahrer = 0 if p13<17 | p13==1104 |  p13==1105
+replace pkwfahrer = 0 if p061_3!=1
+
+bysort hhid pid: egen 
+
+
+bysort werktag: tab urlaub pkwfahrer [iw= w08 * w_hochkm ], col
+

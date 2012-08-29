@@ -1,0 +1,179 @@
+HAUSHALTSGRÖßENKLASSE
+
+1,2, >2 
+
+=> bei Einkäufen des täglichen und aperiodischen Bedarfs sowie Einkaufsbummeln signifikanter Unterschied 
+zwischen den HHGrößenklassen
+=> bei Arbeitswegen und Begleitwegen auch signifikante Unterschiede
+
+
+nbreg  Summe_Eink_per  HHGr_2 HHGr_3, dispersion(mean)
+Negative binomial regression                      Number of obs   =       6312
+                                                  LR chi2(2)      =     137.29
+Dispersion     = mean                             Prob > chi2     =     0.0000
+Log likelihood = -6531.5712                       Pseudo R2       =     0.0104
+
+------------------------------------------------------------------------------
+Summe_E~_per |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      HHGr_2 |   .5365281   .0517036    10.38   0.000      .435191    .6378653
+      HHGr_3 |   .6733279   .0665662    10.12   0.000     .5428606    .8037953
+       _cons |  -.9803721   .0465336   -21.07   0.000    -1.071576    -.889168
+-------------+----------------------------------------------------------------
+    /lnalpha |  -.7099598   .0919942                      -.890265   -.5296546
+-------------+----------------------------------------------------------------
+       alpha |    .491664   .0452302                      .4105469    .5888083
+------------------------------------------------------------------------------
+Likelihood-ratio test of alpha=0:  chibar2(01) =  202.94 Prob>=chibar2 = 0.000
+
+. test  HHGr_2= HHGr_3
+
+ ( 1)  [Summe_Eink_per]HHGr_2 - [Summe_Eink_per]HHGr_3 = 0
+
+           chi2(  1) =    6.75
+         Prob > chi2 =    0.0094
+
+nbreg  Summe_Eink_aper  HHGr_2 HHGr_3, dispersion(mean)
+Negative binomial regression                      Number of obs   =       6312
+                                                  LR chi2(2)      =      66.43
+Dispersion     = mean                             Prob > chi2     =     0.0000
+Log likelihood = -3990.9076                       Pseudo R2       =     0.0083
+
+------------------------------------------------------------------------------
+Summe_E~aper |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      HHGr_2 |   .6022914   .0905402     6.65   0.000      .424836    .7797469
+      HHGr_3 |   .8980325   .1166681     7.70   0.000     .6693673    1.126698
+       _cons |  -1.851099   .0809116   -22.88   0.000    -2.009683   -1.692515
+-------------+----------------------------------------------------------------
+    /lnalpha |   1.156331   .0671854                       1.02465    1.288012
+-------------+----------------------------------------------------------------
+       alpha |   3.178251   .2135322                       2.78612    3.625572
+------------------------------------------------------------------------------
+Likelihood-ratio test of alpha=0:  chibar2(01) =  856.42 Prob>=chibar2 = 0.000
+
+. test  HHGr_2= HHGr_3
+
+ ( 1)  [Summe_Eink_aper]HHGr_2 - [Summe_Eink_aper]HHGr_3 = 0
+
+           chi2(  1) =   10.04
+         Prob > chi2 =    0.0015
+nbreg  Summe_Eink_b  HHGr_2 HHGr_3, dispersion(mean)
+Negative binomial regression                      Number of obs   =       6312
+                                                  LR chi2(2)      =      46.69
+Dispersion     = mean                             Prob > chi2     =     0.0000
+Log likelihood = -1241.9239                       Pseudo R2       =     0.0185
+
+------------------------------------------------------------------------------
+Summe_Eink_b |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      HHGr_2 |   .9875382   .2172887     4.54   0.000     .5616601    1.413416
+      HHGr_3 |   1.655321   .2528246     6.55   0.000     1.159794    2.150848
+       _cons |  -3.883624   .2005912   -19.36   0.000    -4.276775   -3.490472
+-------------+----------------------------------------------------------------
+    /lnalpha |   2.309094   .1441576                       2.02655    2.591637
+-------------+----------------------------------------------------------------
+       alpha |    10.0653    1.45099                      7.587862    13.35162
+------------------------------------------------------------------------------
+Likelihood-ratio test of alpha=0:  chibar2(01) =  259.84 Prob>=chibar2 = 0.000
+
+. test  HHGr_2= HHGr_3
+
+ ( 1)  [Summe_Eink_b]HHGr_2 - [Summe_Eink_b]HHGr_3 = 0
+
+           chi2(  1) =   14.54
+         Prob > chi2 =    0.0001
+
+. nbreg   Summe_Arbeit  HHGr_2 HHGr_3, dispersion(mean)
+
+Fitting Poisson model:
+
+Iteration 0:   log likelihood = -6800.8089  
+Iteration 1:   log likelihood = -6800.5654  
+Iteration 2:   log likelihood = -6800.5654  
+
+Fitting constant-only model:
+
+Iteration 0:   log likelihood = -6867.3657  
+Iteration 1:   log likelihood =  -6867.324  
+Iteration 2:   log likelihood =  -6867.324  
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -6652.5897  
+Iteration 1:   log likelihood = -6627.2825  
+Iteration 2:   log likelihood =  -6626.806  
+Iteration 3:   log likelihood = -6626.8056  
+
+Negative binomial regression                      Number of obs   =       6312
+                                                  LR chi2(2)      =     481.04
+Dispersion     = mean                             Prob > chi2     =     0.0000
+Log likelihood = -6626.8056                       Pseudo R2       =     0.0350
+
+------------------------------------------------------------------------------
+Summe_Arbeit |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      HHGr_2 |   .7606948    .058104    13.09   0.000      .646813    .8745765
+      HHGr_3 |    1.47118   .0678077    21.70   0.000     1.338279     1.60408
+       _cons |  -1.232732   .0530362   -23.24   0.000    -1.336681   -1.128783
+-------------+----------------------------------------------------------------
+    /lnalpha |  -.3996847   .0759559                     -.5485554   -.2508139
+-------------+----------------------------------------------------------------
+       alpha |   .6705314   .0509308                      .5777839    .7781671
+------------------------------------------------------------------------------
+Likelihood-ratio test of alpha=0:  chibar2(01) =  347.52 Prob>=chibar2 = 0.000
+
+. test  HHGr_2= HHGr_3
+
+ ( 1)  [Summe_Arbeit]HHGr_2 - [Summe_Arbeit]HHGr_3 = 0
+
+           chi2(  1) =  214.96
+         Prob > chi2 =    0.0000
+ nbreg    Summe_Begl  HHGr_2 HHGr_3, dispersion(mean)
+
+Fitting Poisson model:
+
+Iteration 0:   log likelihood = -7935.9335  
+Iteration 1:   log likelihood = -7934.7384  
+Iteration 2:   log likelihood = -7934.7355  
+Iteration 3:   log likelihood = -7934.7355  
+
+Fitting constant-only model:
+
+Iteration 0:   log likelihood = -6371.8585  
+Iteration 1:   log likelihood = -5462.6079  
+Iteration 2:   log likelihood = -5406.0613  
+Iteration 3:   log likelihood = -5405.9534  
+Iteration 4:   log likelihood = -5405.9534  
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -5314.4247  
+Iteration 1:   log likelihood = -5301.7685  
+Iteration 2:   log likelihood = -5301.3909  
+Iteration 3:   log likelihood = -5301.3907  
+
+Negative binomial regression                      Number of obs   =       6312
+                                                  LR chi2(2)      =     209.13
+Dispersion     = mean                             Prob > chi2     =     0.0000
+Log likelihood = -5301.3907                       Pseudo R2       =     0.0193
+
+------------------------------------------------------------------------------
+  Summe_Begl |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+      HHGr_2 |   1.559367   .1041791    14.97   0.000      1.35518    1.763554
+      HHGr_3 |   1.079957   .1396363     7.73   0.000     .8062748    1.353639
+       _cons |  -1.891193   .0944776   -20.02   0.000    -2.076366   -1.706021
+-------------+----------------------------------------------------------------
+    /lnalpha |   1.854243   .0434065                      1.769168    1.939319
+-------------+----------------------------------------------------------------
+       alpha |   6.386864   .2772312                      5.865973     6.95401
+------------------------------------------------------------------------------
+Likelihood-ratio test of alpha=0:  chibar2(01) = 5266.69 Prob>=chibar2 = 0.000
+
+. test  HHGr_2= HHGr_3
+
+ ( 1)  [Summe_Begl]HHGr_2 - [Summe_Begl]HHGr_3 = 0
+
+           chi2(  1) =   18.39
+         Prob > chi2 =    0.0000

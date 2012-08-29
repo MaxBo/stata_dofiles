@@ -1,0 +1,3 @@
+merge HHID using "C:\Spitzencluster Luftverkehr\Modell\Nachfragedaten\MiD_Codiert\2008\MiD_2008_2006_Wege_9_ausw.dta", uniqmaster keep(HP_SEX HP_ALTER HP_BESCH  BerufVoll BerufTeil soNErwerb Student Azubi OSchüler GSchüler Kleinkind Rentner NErwerb)
+
+duplicates drop

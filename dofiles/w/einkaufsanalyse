@@ -1,0 +1,7 @@
+clear
+set memory 700m
+use  "C:\Spitzencluster Luftverkehr\Modell\Nachfragedaten\MiD_Codiert\2008\MiD_2008_Wege_6n.dta", clear
+
+
+ 
+ 

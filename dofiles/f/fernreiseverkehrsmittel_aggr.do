@@ -1,0 +1,2 @@
+gen  P1013_x= P1013_1 *10000000+ P1013_2*1000000+ P1013_3*100000+ P1013_4*10000+ P1013_5*1000+ P1013_6*100+ P1013_8*10+ P1013_7*10+ P1013_9*10
+label variable P1013_x "Verkehrsmittel Fernverkehr kombiniert"

@@ -1,0 +1,9 @@
+clear
+set more off
+* set memory 700m
+local path "X:\Daten\Modell_MRH\Nachfragedaten\MID_D\"
+local path_ber "X:\Daten\Modell_MRH\Nachfragedaten\Berechnungsergebnisse\Verkehrsnachfrage\"
+local path_postgis "X:\Daten\Modell_MRH\Nachfragedaten\Export_PostGIS\"
+
+
+use  "`path'MiD_Wege_cod_bereinig_def_wegeketten.dta", clear
