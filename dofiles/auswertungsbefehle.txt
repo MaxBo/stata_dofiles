@@ -1,0 +1,14 @@
+* Datei mit Auswertungsbefehlen
+
+
+(1) gibt nach Zwecken und Wegepaaren sortiert Fahrzeit, Aktivitätendauer und Entfernung je Aktivität an
+sort Zweck
+by Zweck: sum  fahrzeit akt_dauer WEGKM_K if bearbeitet !=5
+
+sort wegpaar
+by wegpaar: sum  fahrzeit akt_dauer WEGKM_K if bearbeitet !=5
+
+merge HHID PID using "C:\Spitzencluster Luftverkehr\Modell\Nachfragedaten\MiD_Codiert\2008\MiD_2008_Wege_zeitn5_akt.dta", uniqmaster sort keep(Anz_Wege aktzeit_gesamt fahrzeit_gesamt bearbeitet)
+
+sort  PERGRUP
+by PERGRUP: sum   Anz_Wege fahrzeit_gesamt aktzeit_gesamt if bearbeitet !=5

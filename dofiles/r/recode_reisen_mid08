@@ -1,0 +1,15 @@
+clear
+set memory 700m
+use "C:\Spitzencluster Luftverkehr\Modell\Nachfragedaten\MID_2008_Dtl\STATA\STATA_Zusatzfile\MiD2008_Zusatzfile_Reisen.dta", clear
+
+replace p101 = .f if p101==97
+replace p101 = .g if p101==98
+
+gen Reisezweck = 1 if p101 ==4
+replace Reisezweck = 2 if p101 == 1
+replace Reisezweck = 3 if p101 == 2 | p101 ==3 | p101 == 5 | p101==6
+
+label var Reisezweck "Reisezweck"
+label define Reisezweck 1 `"geschäftlich"' 2 `"Urlaub"'  3 `"privat"'
+label value Reieszweck Reisezweck
+

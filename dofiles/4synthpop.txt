@@ -1,0 +1,21 @@
+gen flugart_n = 1 if flugart==1
+replace flugart_n = 2 if flugart==2| flugart==3
+replace flugart_n = 3 if flugart==4
+tab flugart_n, gen(flugart_n)
+tab Stunde, gen(Stunde_)
+
+gen Tageszeit = 1 if Stunde <9
+replace Tageszeit = 2 if missing(Tageszeit)
+replace Tageszeit = 3 if Stunde ==22
+label define tz 1  `"morgens"', modify
+label define tz 2  `"tagsüber"', modify
+label define tz 3  `"nachts"', modify
+label value Tageszeit tz
+ tab Tageszeit, gen(tz_)
+
+
+glm f32  tz_1 tz_2 tz_3 flugart_n1 flugart_n2 flugart_n3 if werktag==1 & f32<240, family(gamma) link(id)
+estimates save "C:\Spitzencluster Luftverkehr\Modell\Nachfragedaten\Do\synthpax.ster", replace
+
+
+

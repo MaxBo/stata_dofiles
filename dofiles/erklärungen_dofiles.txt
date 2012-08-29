@@ -1,0 +1,5 @@
+1) Zeitumkodierung.do ausführen
+2) Editieren der Wegekette mit negativen Aktivitätenzeiten
+3) Zeitumkodierung_änderungen.do ausführen --> Ergebnisse befinden sich dann in der *n5.dta
+4) Fahrzeiten prüfen
+4) Wegeketten*.do ausführen mit der letzt gespeicherten *.dta

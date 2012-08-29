@@ -1,0 +1,46 @@
+clear
+set memory 700m
+use "C:\Sonja_Diss\KiD_2002\Einzelfahrten_100630_neu.dta", clear
+
+gen Ab_Land = 1 if f02b=="D"
+replace Ab_Land = 2 if f02b == "A"
+replace Ab_Land = 3 if f02b == "B"
+replace Ab_Land = 4 if f02b == "CH"
+replace Ab_Land = 5 if f02b == "CZ"
+replace Ab_Land = 6 if f02b == "DK"
+replace Ab_Land = 7 if f02b == "E"
+replace Ab_Land = 8 if f02b == "F"
+replace Ab_Land = 9 if f02b == "FIN"
+replace Ab_Land = 10 if f02b == "GB"
+replace Ab_Land = 11 if f02b == "h"
+replace Ab_Land = 12 if f02b == "HR"
+replace Ab_Land = 13 if f02b == "I"
+replace Ab_Land = 14 if f02b == "IRL"
+replace Ab_Land = 15 if f02b == "L"
+replace Ab_Land = 16 if f02b == "NL"
+replace Ab_Land = 17 if f02b == "P"
+replace Ab_Land = 18 if f02b == "PL"
+replace Ab_Land = 19 if f02b == "S"
+replace Ab_Land = 20 if f02b == "SLO"
+
+label variable Ab_Land "Abfahrtsland"
+label define Ab_Land 1 `"D"', modify
+label define Ab_Land 2 `"A"', modify
+label define Ab_Land 3 `"B"', modify
+label define Ab_Land 4 `"CH"', modify
+label define Ab_Land 5 `"CZ"', modify
+label define Ab_Land 6 `"DK"', modify
+label define Ab_Land 7 `"E"', modify
+label define Ab_Land 8 `"F"', modify
+label define Ab_Land 9 `"FIN"', modify
+label define Ab_Land 10 `"GB"', modify
+label define Ab_Land 11 `"h"', modify
+label define Ab_Land 12 `"HR"', modify
+label define Ab_Land 13 `"I"', modify
+label define Ab_Land 14 `"IRL"', modify
+label define Ab_Land 15 `"L"', modify
+label define Ab_Land 16 `"NL"', modify
+label define Ab_Land 17 `"P"', modify
+label define Ab_Land 18 `"PL"', modify
+label define Ab_Land 19 `"S"', modify
+label define Ab_Land 20 `"SLO"', modify

@@ -1,0 +1,185 @@
+LEBENSPHASE
+
+=> signifikante Unterschiede zwischen Haushalten ohne Kindern und allen übrigen Haushalten bei täglichen Einkaufswegen
+=> keine signifikanten Unterschiede zwischen den 4 anderen Lebensphasen bei täglichen Einkaufswegen ==> Arbeitsteilung im Mehrpersonenhaushalt?
+
+
+=> bei aperiodischen Einkaufswegen signifikante Unterschiede zwischen  
+ 
+  nbreg  Summe_Eink_aper HHLeben_2 HHLeben_3 HHLeben_4 HHLeben_5 [iw=HH_GEW], dispersion(mean)
+Fitting Poisson model:
+
+Iteration 0:   log likelihood = -3443.4796  
+Iteration 1:   log likelihood = -3443.4795  
+
+Fitting constant-only model:
+
+Iteration 0:   log likelihood = -3250.6413  
+Iteration 1:   log likelihood =  -3178.284  
+Iteration 2:   log likelihood =  -3170.968  
+Iteration 3:   log likelihood = -3170.9604  
+Iteration 4:   log likelihood = -3170.9604  
+
+Fitting full model:
+
+Iteration 0:   log likelihood =  -3152.743  
+Iteration 1:   log likelihood = -3152.3032  
+Iteration 2:   log likelihood =  -3152.303  
+
+Negative binomial regression                      Number of obs   =       6327
+                                                  LR chi2(4)      =      37.31
+Dispersion     = mean                             Prob > chi2     =     0.0000
+Log likelihood = -3152.303                        Pseudo R2       =     0.0059
+
+------------------------------------------------------------------------------
+Summe_E~aper |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   HHLeben_2 |   .6173362   .1732018     3.56   0.000     .2778669    .9568055
+   HHLeben_3 |   .5932754    .136678     4.34   0.000     .3253915    .8611592
+   HHLeben_4 |   .1350679   .1749892     0.77   0.440    -.2079046    .4780405
+   HHLeben_5 |   .4074216   .0834686     4.88   0.000     .2438262    .5710171
+       _cons |  -1.688993   .0619932   -27.24   0.000    -1.810498   -1.567489
+-------------+----------------------------------------------------------------
+    /lnalpha |   1.135288   .0790918                      .9802715    1.290305
+-------------+----------------------------------------------------------------
+       alpha |   3.112071   .2461392                       2.66518    3.633896
+------------------------------------------------------------------------------
+Likelihood-ratio test of alpha=0:  chibar2(01) =  582.35 Prob>=chibar2 = 0.000
+
+. test  HHLeben_2= HHLeben_3
+
+ ( 1)  [Summe_Eink_aper]HHLeben_2 - [Summe_Eink_aper]HHLeben_3 = 0
+
+           chi2(  1) =    0.01
+         Prob > chi2 =    0.9054
+
+. test  HHLeben_2= HHLeben_4
+
+ ( 1)  [Summe_Eink_aper]HHLeben_2 - [Summe_Eink_aper]HHLeben_4 = 0
+
+           chi2(  1) =    4.39
+         Prob > chi2 =    0.0361
+
+. test  HHLeben_2= HHLeben_5
+
+ ( 1)  [Summe_Eink_aper]HHLeben_2 - [Summe_Eink_aper]HHLeben_5 = 0
+
+           chi2(  1) =    1.50
+         Prob > chi2 =    0.2199
+
+. test  HHLeben_3= HHLeben_4
+
+ ( 1)  [Summe_Eink_aper]HHLeben_3 - [Summe_Eink_aper]HHLeben_4 = 0
+
+           chi2(  1) =    5.05
+         Prob > chi2 =    0.0247
+
+. test  HHLeben_3= HHLeben_5
+
+ ( 1)  [Summe_Eink_aper]HHLeben_3 - [Summe_Eink_aper]HHLeben_5 = 0
+
+           chi2(  1) =    1.92
+         Prob > chi2 =    0.1655
+
+. test  HHLeben_4= HHLeben_5
+
+ ( 1)  [Summe_Eink_aper]HHLeben_4 - [Summe_Eink_aper]HHLeben_5 = 0
+
+           chi2(  1) =    2.48
+         Prob > chi2 =    0.1153
+
+. 
+
+
+
+
+. nbreg  Summe_Eink_per HHLeben_2 HHLeben_3 HHLeben_4 HHLeben_5 [iw=HH_GEW], dispersion(mean)
+
+Fitting Poisson model:
+
+Iteration 0:   log likelihood = -5288.1867  
+Iteration 1:   log likelihood = -5288.1867  
+
+Fitting constant-only model:
+
+Iteration 0:   log likelihood = -5286.9666  
+Iteration 1:   log likelihood = -5256.5745  
+Iteration 2:   log likelihood = -5256.4586  
+Iteration 3:   log likelihood = -5256.4584  
+
+Fitting full model:
+
+Iteration 0:   log likelihood = -5222.5911  
+Iteration 1:   log likelihood = -5222.0313  
+Iteration 2:   log likelihood = -5222.0301  
+Iteration 3:   log likelihood = -5222.0301  
+
+Negative binomial regression                      Number of obs   =       6327
+                                                  LR chi2(4)      =      68.86
+Dispersion     = mean                             Prob > chi2     =     0.0000
+Log likelihood = -5222.0301                       Pseudo R2       =     0.0065
+
+------------------------------------------------------------------------------
+Summe_E~_per |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   HHLeben_2 |   .5135846   .0962165     5.34   0.000     .3250037    .7021655
+   HHLeben_3 |   .3184132   .0803988     3.96   0.000     .1608343     .475992
+   HHLeben_4 |   .3253421   .0923782     3.52   0.000     .1442841    .5064001
+   HHLeben_5 |   .3436985   .0472098     7.28   0.000      .251169    .4362279
+       _cons |  -.8371001    .035363   -23.67   0.000    -.9064104   -.7677898
+-------------+----------------------------------------------------------------
+    /lnalpha |   -.766381   .1116079                     -.9851285   -.5476335
+-------------+----------------------------------------------------------------
+       alpha |   .4646918   .0518633                      .3733912    .5783168
+------------------------------------------------------------------------------
+Likelihood-ratio test of alpha=0:  chibar2(01) =  132.31 Prob>=chibar2 = 0.000
+
+. test  HHLeben_2= HHLeben_3
+
+ ( 1)  [Summe_Eink_per]HHLeben_2 - [Summe_Eink_per]HHLeben_3 = 0
+
+           chi2(  1) =    2.88
+         Prob > chi2 =    0.0896
+
+. test  HHLeben_2= HHLeben_4
+
+ ( 1)  [Summe_Eink_per]HHLeben_2 - [Summe_Eink_per]HHLeben_4 = 0
+
+           chi2(  1) =    2.32
+         Prob > chi2 =    0.1279
+
+. test  HHLeben_2= HHLeben_5
+
+ ( 1)  [Summe_Eink_per]HHLeben_2 - [Summe_Eink_per]HHLeben_5 = 0
+
+           chi2(  1) =    3.21
+         Prob > chi2 =    0.0731
+
+. test  HHLeben_3= HHLeben_4
+
+ ( 1)  [Summe_Eink_per]HHLeben_3 - [Summe_Eink_per]HHLeben_4 = 0
+
+           chi2(  1) =    0.00
+         Prob > chi2 =    0.9506
+
+. test  HHLeben_3= HHLeben_5
+
+ ( 1)  [Summe_Eink_per]HHLeben_3 - [Summe_Eink_per]HHLeben_5 = 0
+
+           chi2(  1) =    0.10
+         Prob > chi2 =    0.7480
+
+. testv  HHLeben_4= HHLeben_5
+unrecognized command:  testv
+r(199);
+
+. test  HHLeben_4= HHLeben_5
+
+ ( 1)  [Summe_Eink_per]HHLeben_4 - [Summe_Eink_per]HHLeben_5 = 0
+
+           chi2(  1) =    0.04
+         Prob > chi2 =    0.8400
+
+. 
+
+

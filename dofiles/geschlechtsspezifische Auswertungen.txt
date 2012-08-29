@@ -1,0 +1,119 @@
+GESCHLECHTSSPEZIFISCHE AUSWERTUNGEN
+
+ARBEITSWEGE
+nbreg  Anz_zurArbeit  BerufVoll BerufVollW BerufVollM BerufTeil BerufTeilM BerufTeilW Student Azubi OSchüler  GSchüler Kleinkind [iw=W_GEW] if WID==1 & werktag==1, dispersion(mean)
+note: BerufVollM dropped because of collinearity
+note: BerufTeilW dropped because of collinearity
+
+           |      BerufTeilW
+BerufTeilM |         0          1 |     Total
+-----------+----------------------+----------
+         0 |         0      2,522 |     2,522 
+         1 |     1,191          0 |     1,191 
+-----------+----------------------+----------
+     Total |     1,191      2,522 |     3,713 
+
+
+          |      BerufVollM
+BerufVollW |         0          1 |     Total
+-----------+----------------------+----------
+         0 |         0      2,206 |     2,206 
+         1 |       948          0 |       948 
+-----------+----------------------+----------
+     Total |       948      2,206 |     3,154 
+
+
+         |       NErwerbM
+  NErwerbW |         0          1 |     Total
+-----------+----------------------+----------
+         0 |         0      1,525 |     1,525 
+         1 |     1,653          0 |     1,653 
+-----------+----------------------+----------
+     Total |     1,653      1,525 |     3,178 
+
+
+	 
+           |       StudentM
+  StudentW |         0          1 |     Total
+-----------+----------------------+----------
+         0 |         0         63 |        63 
+         1 |        80          0 |        80 
+-----------+----------------------+----------
+     Total |        80         63 |       143 
+
+           |        AzubiM
+    AzubiW |         0          1 |     Total
+-----------+----------------------+----------
+         0 |         0         95 |        95 
+         1 |        88          0 |        88 
+-----------+----------------------+----------
+     Total |        88         95 |       183 
+
+
+           |       OSchülerM
+ OSchülerW |         0          1 |     Total
+-----------+----------------------+----------
+         0 |         0        446 |       446 
+         1 |       403          0 |       403 
+-----------+----------------------+----------
+     Total |       403        446 |       849 
+
+
+
+=> Vollerwerbstätige eher Männer und Teilzeiterwerbstätigen eher Frauen
+=> signifikante geschlechtsspezifische Unterschiede
+
+Negative binomial regression                      Number of obs   =       7732
+                                                  LR chi2(9)      =    3182.45
+Dispersion     = mean                             Prob > chi2     =     0.0000
+Log likelihood = -4124.6467                       Pseudo R2       =     0.2784
+
+------------------------------------------------------------------------------
+Anz_zurArb~t |      Coef.   Std. Err.      z    P>|z|     [95% Conf. Interval]
+-------------+----------------------------------------------------------------
+   BerufVoll |   4.214396   .2074312    20.32   0.000     3.807838    4.620954
+  BerufVollW |   .0522307   .0440787     1.18   0.236    -.0341619    .1386233
+   BerufTeil |   2.656417   .2265141    11.73   0.000     2.212457    3.100376
+  BerufTeilW |   .8402631   .1067897     7.87   0.000     .6309591    1.049567
+     Student |  -.4115563   .2906753    -1.42   0.157    -.9812695    .1581568
+       Azubi |   .2868462   .1421916     2.02   0.044     .0081557    .5655367
+    OSchüler |  -.4158694   .2002036    -2.08   0.038    -.8082613   -.0234774
+    GSchüler |  -14.42671   893.9063    -0.02   0.987    -1766.451    1737.597
+   Kleinkind |  -16.57306   445.6123    -0.04   0.970    -889.9572    856.8111
+       _cons |  -4.302939   .2059542   -20.89   0.000    -4.706602   -3.899276
+-------------+----------------------------------------------------------------
+    /lnalpha |  -29.15351          .                             .           .
+-------------+----------------------------------------------------------------
+       alpha |   2.18e-13          .                             .           .
+------------------------------------------------------------------------------
+Likelihood-ratio test of alpha=0:  chibar2(01) =    0.00 Prob>=chibar2 = 1.000
+
+
+. test  BerufVoll= BerufVollW
+
+ ( 1)  [Anz_zurArbeit]BerufVoll - [Anz_zurArbeit]BerufVollW = 0
+
+           chi2(  1) =  373.12
+         Prob > chi2 =    0.0000
+
+
+
+. test  BerufTeil= BerufTeilW
+
+ ( 1)  [Anz_zurArbeit]BerufTeil - [Anz_zurArbeit]BerufTeilW = 0
+
+           chi2(  1) =   40.48
+         Prob > chi2 =    0.0000
+
+
+
+EINKAUFSWEGE
+periodisch
+nbreg  Anz_Eink_per  BerufVoll BerufVollW  BerufTeil BerufTeilM BerufTeilW Student   StudentW StudentM Azubi  AzubiW AzubiM OSchüler  GSchüler  NErwerb NErwerbW NErwerbM [iw=W_GEW] if WID==1, dispersion(mean)
+note: BerufVollM dropped because of collinearity
+note: BerufTeilW dropped because of collinearity
+note: StudentM dropped because of collinearity
+note: AzubiM dropped because of collinearity
+note: NErwerbW dropped because of collinearity
+
+
