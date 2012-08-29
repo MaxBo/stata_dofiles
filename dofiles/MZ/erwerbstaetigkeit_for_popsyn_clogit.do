@@ -36,11 +36,7 @@ clonevar pers_hh = EF20
 // BUNDESLAND
 // EF1 Land der Bundesrepublik
 // EF563 Gemeindegrößenklassen
-clonevar bl = EF1
-recode bl (1 2 3 4 5 7 10 11 12 13 14 16 = 17)
-recode bl (6 = 2) (8 = 13) (9 = 3) (17 = 0) (15 = 1)
-label define bl 1 "Schleswig-Holstein" 2 "Hamburg" 13 "Mecklenburg-Vorpommern" 3 "Niedersachsen" 0 "sonstiges Bundesland", replace
-label values bl bl
+recode EF1 (1 2 3 4 5 7 10 11 12 13 14 16 = 0 "sonstiges Bundesland") (6 = 2 "Hamburg") (8 = 13 "Mecklenburg-Vorpommern") (9 = 3 "Niedersachsen") (17 = 0) (15 = 1 "Schleswig-Holstein"), gen(bl)
 gen bl_gg = .
 replace bl_gg = 10*bl + EF563
 recode bl_gg (137=133) (1/9=0)
@@ -79,48 +75,203 @@ recode EF38 (1/3 6/10 = 1 "ET") (4 5 12 13 = 2 "AL") (14/22 = 3 "NE"), gen(erwer
 gen kk01 = EF44<=1
 gen kk23 = (EF44<=3) & (EF44>=2)
 gen kk46 = (EF44<=6) & (EF44>=4)
+gen kk710 = (EF44<=10) & (EF44>=7)
+gen kk1117 = (EF44<=17) & (EF44>=11)
 gen ep2165 = (EF44<=65) & (EF44>=21)
 bysort EF3 EF4: egen hhkk01 = total(kk01)
 bysort EF3 EF4: egen hhkk23 = total(kk23)
 bysort EF3 EF4: egen hhkk46 = total(kk46)
-replace hhkk01=1 if hhkk01>1
-replace hhkk23=1 if hhkk23>1
-replace hhkk46=1 if hhkk46>1
+bysort EF3 EF4: egen hhkk710 = total(kk710)
+bysort EF3 EF4: egen hhkk1117 = total(kk1117)
+// Erwerbstätige im Haushalt
+bysort EF3 EF4: egen hh_et = total(erwerb3==1)
+// andere Erwerbstätige im Haushalt
+gen andere_et = (hh_et - (erwerb3==1)) //* (hh_et_m > 0)
 
 bysort EF3 EF4: egen hhep = total(ep2165)
 recode hhep (0/1=0) (2/99=1)
 tabm hhkk01 if EF5a==1
 
-//constraint define 1 [ET]1b.agegrp#0b.female = 0
-//constraint define 2 [ET]1b.agegrp#1o.female = 0
-
-constraint define 11 [NE]1b.agegrp#0b.female = 0
-constraint define 12 [NE]1b.agegrp#1.female = 0
-constraint define 13 [AL]1b.agegrp#0b.female = 0
-constraint define 14 [AL]1b.agegrp#1.female = 0
-constraint define 15 [AL]14.agegrp#0b.female = 0
-
-constraint define 21 [AL]1.hhep#0b.female = 0
-constraint define 22 [AL]1.hhkk01#0b.female = 0
-constraint define 23 [AL]1.hhkk23#0b.female = 0
-constraint define 24 [AL]1.hhkk46#0b.female = 0
-constraint define 25 [NE]1.hhep#0b.female = 0
-constraint define 26 [NE]1.hhkk01#0b.female = 0
-constraint define 27 [NE]1.hhkk23#0b.female = 0
-constraint define 28 [NE]1.hhkk46#0b.female = 0
-constraint define 31 [AL]1.hhep#1.female = 0
-constraint define 32 [AL]1.hhkk01#1.female = 0
-constraint define 33 [AL]1.hhkk23#1.female = 0
-constraint define 34 [AL]1.hhkk46#1.female = 0
-constraint define 35 [NE]1.hhep#1.female = 0
-constraint define 36 [NE]1.hhkk01#1.female = 0
-constraint define 37 [NE]1.hhkk23#1.female = 0
-constraint define 38 [NE]1.hhkk46#1.female = 0
+// Stellung im Beruf
+recode EF117 (1=1 "s_o_b") (2=2 "s_m_b") (3=3 "mhfam") (4 9 =4 "beamte") (5/6 10/11 = 5 "angest") (7/8=6 "azubi"), gen(stellung)
 
 
-mlogit erwerb3 female i.agegrp#female hhep#female /*
+// eindeutige ID
+gen long pid = EF3 * 10000 + EF4 * 100 + EF5a
+
+
+*******************************************************************
+
+// VOLLZEIT-/TEILZEITTÄTIGKEIT
+// EF129
+// WORKED HOURS
+// EF131 Normalerweise geleistete Arbeitszeit je Woche (Stunden)
+recode EF131 (0/10 = 1 "0/10") (11/20 = 2 "11/20") (21/31 = 3 "21/31") (32/40 = 4 "32/40") (41/50 = 5 "41/50") (51/100 = 6 "51/100"), gen(hours)
+
+tab hours EF129 // Definition: ab 32 Stunden Vollzeit
+
+recode EF129 (2=0 "Teilzeit") (1=1 "Vollzeit"), gen(vz)
+
+logit vz i.agegrp#female i.bl_gg wfl_pk i.stellung if erwerb3 == 1 [iw=EF960]
+outreg2 using "D:\Modell\sim\params\vztz.txt", bdec(5) tdec(5) noparen noaster replace
+
+*******************************************************************
+// CLogit Modell ET_AL_NE
+
+
+//keep  if pid<50000000
+
+// nur relevante Variablen behalten
+keep pid agegrp female hhkk* wfl_pk bl_gg EF960 erwerb3 andere_et
+// EIne Zeile je Alternative
+expand 3
+bysort pid: gen _altnum = _n
+gen ET = _altnum == 1
+gen AL = _altnum == 2
+gen NE = _altnum == 3
+// generiere abhängige Variable Choice
+gen choice = _altnum == erwerb3
+gen sample = 1
+
+forvalues a=1/14 {
+	forvalues f = 0/1 {
+	    if `a'>=2 & `a'<=11 {
+			gen AL_f`f'_agr_`a' = AL & agegrp == `a' & female==`f'
+		}
+		if `a'>=2 & `a'<=13 {
+			gen NE_f`f'_agr_`a' = NE & agegrp== `a' & female==`f'
+		}
+	}
+}
+
+//dropvars NE_f?* AL_f*
+
+// Kinder im Haushalt nach Geschlecht
+forvalues f = 0/1 {
+	gen ET_f`f'_hhkk01 = hhkk01 * (ET & female==`f')
+	gen ET_f`f'_hhkk23 = hhkk23 * (ET & female==`f')
+	gen ET_f`f'_hhkk46 = hhkk46 * (ET & female==`f')
+	gen ET_f`f'_hhkk710 = hhkk710 * (ET & female==`f')
+	gen ET_f`f'_hhkk1117 = hhkk1117 * (ET & female==`f')
+}
+// andere Erwerbstätige im Haushalt
+gen ET_mann_arbeitet = (andere_et >= 1) & ET & female==1
+
+// Bundesländer und Gemeindegrößen
+// Hole erst Vektor der Ausprägungen
+tab bl_gg, matrow(i)
+local rofi = rowsof(i)
+forvalues b = 1/`rofi' {
+	local bi = i[`b',1]
+	if `bi' > 0 {
+		forvalues f = 0/1 {
+			gen ET_f`f'_bl_`bi' = ET & bl_gg == `bi' & female==`f'
+		    }
+		gen AL_bl_`bi' = AL & bl_gg == `bi'
+	}
+}
+
+gen AL_wfl = AL * wfl_pk
+gen NE_wfl = NE * wfl_pk
+
+
+replace sample = 0 if AL & (agegrp==1 | agegrp >= 12)
+replace sample = 0 if ET & (agegrp==1 | agegrp >= 14)
+
+
+clogit choice AL_* NE_* ET_*  if sample  [iw= EF960] , group(pid)
+outreg2 using "D:\Modell\sim\params\erwerbst_al_ne_clogit.txt", bdec(5) tdec(5) noparen noaster replace
+drop ET_mann_arbeitet 
+clogit choice AL_* NE_* ET_*  if sample  [iw= EF960] , group(pid)
+outreg2 using "D:\Modell\sim\params\erwerbst_al_ne_clogit2.txt", bdec(5) tdec(5) noparen noaster replace
+
+*********************************************************************************************************
+// Modell Stellung im Beruf
+
+
+
+//keep  if pid<50000000
+
+// nur relevante Variablen behalten
+keep pid agegrp female hhkk* wfl_pk bl_gg EF960 erwerb3 stellung
+// Eine Zeile je Alternative
+drop if erwerb3 > 1
+drop if stellung == .
+expand 6
+bysort pid: gen _altnum = _n
+label values _altnum stellung
+
+gen SOB = _altnum == 1
+gen SMB = _altnum == 2
+gen MHF = _altnum == 3
+gen BEA = _altnum == 4
+gen ANG = _altnum == 5
+gen AZU = _altnum == 6
+// generiere abhängige Variable Choice
+gen choice = _altnum == stellung
+gen sample = 1
+
+replace sample = 0 if AZU & agegrp > 7
+replace sample = 0 if BEA & agegrp > 11
+tab agegrp, gen(ag_)
+fovalues i=1/13 {
+    local i1 = `i'+1
+    rename ag_`i' ag_`i1'
+}
+
+asclogit choice if sample, case(pid) alt(_altnum) casevars(ag_* wfl_pk)
+outreg2 using "D:\Modell\sim\params\stellung_asclogit_test.txt", bdec(5) tdec(5) noparen noaster replace
+
+
+
+forvalues a=2/14 {
+	forvalues f = 0/1 {
+		gen SOB_f`f'_agr_`a' = SOB & agegrp == `a' & female==`f'
+		gen SMB_f`f'_agr_`a' = SMB & agegrp == `a' & female==`f'
+		gen MHF_f`f'_agr_`a' = MHF & agegrp == `a' & female==`f'
+//		gen ANG_f`f'_agr_`a' = SOB & agegrp == `a' & female==`f'
+	    if `a'<=7 {
+			gen AZU_f`f'_agr_`a' = AZU & agegrp == `a' & female==`f'
+		}
+	    if `a'<=11 {
+			gen BEA_f`f'_agr_`a' = BEA & agegrp == `a' & female==`f'
+		}
+	}
+}
+
+
+// Bundesländer und Gemeindegrößen
+// Hole erst Vektor der Ausprägungen
+tab bl_gg, matrow(i)
+local rofi = rowsof(i)
+forvalues b = 1/`rofi' {
+	local bi = i[`b',1]
+	if `bi' > 0 {
+		gen SOB_bl_`bi' = SOB & bl_gg == `bi'
+		gen SMB_bl_`bi' = SMB & bl_gg == `bi'
+		gen MHF_bl_`bi' = MHF & bl_gg == `bi'
+		gen BEA_bl_`bi' = BEA & bl_gg == `bi'
+		gen AZU_bl_`bi' = AZU & bl_gg == `bi'
+	}
+}
+
+
+
+clogit choice SOB_* SMB_* MHF_* BEA_* AZU_*  if sample [iw= EF960] , group(pid)
+outreg2 using "D:\Modell\sim\params\stellung_clogit.txt", bdec(5) tdec(5) noparen noaster replace
+
+
+
+
+
+
+mlogit erwerb3 ibn.agegrp#female [iw= EF960] in 1/10000, base(1) constraint(12/20) noconst  collinear
+
+
+
+mlogit erwerb3 ibn.agegrp#female hhep#female /*
 */ hhkk01#female hhkk23#female hhkk46#female /*
-*/ wfl_pk ib0.bl_gg#female [iw= EF960], base(1) constraint(1/99)  collinear
+*/ wfl_pk ib0.bl_gg#female [iw= EF960] in 1/10000, base(1) constraint(1/99) noconst  collinear
 
 outreg2 using "D:\Modell\sim\params\erwerbst_al_ne.txt", bdec(5) tdec(5) noparen noaster replace
 
@@ -146,21 +297,8 @@ gen etaetig = EF84 if erwerb == 1
 recode erwerb (3 4 5 = 1) if EF117 < .
 tab erwerb EF117 
 
-// WORKED HOURS
-// EF131 Normalerweise geleistete Arbeitszeit je Woche (Stunden)
-clonevar hours = EF131
-recode hours (0/10 = 1) (11/20 = 2) (21/30 = 3) (31/40 = 4) (41/50 = 5) (51/100 = 6)
-label define hours 1 "0/10" 2 "11/20" 3 "21/30" 4 "31/40" 5 "41/50" 6 "51/100", replace
-label values hours hours
 
-// VOLLZEIT-/TEILZEITTÄTIGKEIT
-// EF129
 
-tab hours EF129 // Definition: ab 32 Stunden Vollzeit
-
-recode EF129 (2=0 "Teilzeit") (1=1 "Vollzeit"), gen(vz)
-logit vz i.agegrp#female i.bl_gg wfl_pk if erwerb3 == 1 [iw=EF960]
-outreg2 using "D:\Modell\sim\params\vztz.txt", bdec(5) tdec(5) noparen noaster replace
 
 
 // DISCRETE CHOICE MODELS 
