@@ -10,10 +10,11 @@ drop if EF5b == 1
 // EF30?? Bevölkerung am Hauptwohnsitz
 
 // AGEGRP (age groups)
-clonevar agegrp = EF44
-recode agegrp (0/14 = 1) (15/20 = 2) (21/25 = 3) (26/30 = 4) (31/35 = 5) (36/40 = 6) (41/45 = 7) (46/50 = 8) (51/55 = 9) (56/60 = 10) (61/65 =11) (66/70 = 12) (71/75 = 13) (75/95 = 14)
-label define agegrp 1 "0/14" 2 "15/20" 3 "21/25" 4 "26/30" 5 "31/35" 6 "36/40" 7 "41/45" 8 "46/50" 9 "51/55" 10 "56/60" 11 "61/65" 12 "66/70" 13 "71/75" 14 "75/95"
-label values agegrp agegrp
+
+recode EF44 (0/14 = 1 "0/14") (15/17 = 2 "15/17") (18/20 = 3 "18/20") (21/25 = 4 "21/25") (26/30 = 5 "26/40") (31/35 = 6 "31/35") /*
+*/(36/40 = 7 "36/40") (41/45 = 8 "41/45") (46/50 = 9 "46/50") (51/55 = 10 "51/55") (56/60 = 11 "56/60") (61/63 =12 "61/63") (64/65 =13 "64/65") /*
+*/(66/70 = 14 "66/70") (71/75 = 15 "71/75") (76/95 = 16 "76/95"), gen(agegrp)
+
 
 // FEMALE (sex)
 recode EF46 (2=1 "Frau") (1=0 "Mann"), gen(female)
@@ -135,7 +136,7 @@ gen NE = _altnum == 3
 gen choice = _altnum == erwerb3
 gen sample = 1
 
-forvalues a=1/14 {
+forvalues a=1/16 {
 	forvalues f = 0/1 {
 	    if `a'>=2 & `a'<=11 {
 			gen AL_f`f'_agr_`a' = AL & agegrp == `a' & female==`f'
@@ -178,12 +179,12 @@ gen AL_wfl = AL * wfl_pk
 gen NE_wfl = NE * wfl_pk
 
 
-replace sample = 0 if AL & (agegrp==1 | agegrp >= 12)
-replace sample = 0 if ET & (agegrp==1 | agegrp >= 14)
+replace sample = 0 if AL & (agegrp==1 | agegrp >= 14)
+replace sample = 0 if ET & (agegrp==1 | agegrp >= 16)
 
 
-clogit choice AL_* NE_* ET_*  if sample  [iw= EF960] , group(pid)
-outreg2 using "D:\Modell\sim\params\erwerbst_al_ne_clogit.txt", bdec(5) tdec(5) noparen noaster replace
+//clogit choice AL_* NE_* ET_*  if sample  [iw= EF960] , group(pid)
+//outreg2 using "D:\Modell\sim\params\erwerbst_al_ne_hhgr_clogit.txt", bdec(5) tdec(5) noparen noaster replace
 drop ET_mann_arbeitet 
 clogit choice AL_* NE_* ET_*  if sample  [iw= EF960] , group(pid)
 outreg2 using "D:\Modell\sim\params\erwerbst_al_ne_clogit2.txt", bdec(5) tdec(5) noparen noaster replace
@@ -214,8 +215,8 @@ gen AZU = _altnum == 6
 gen choice = _altnum == stellung
 gen sample = 1
 
-replace sample = 0 if AZU & agegrp > 7
-replace sample = 0 if BEA & agegrp > 11
+replace sample = 0 if AZU & agegrp > 8
+replace sample = 0 if BEA & agegrp > 14
 tab agegrp, gen(ag_)
 fovalues i=1/13 {
     local i1 = `i'+1
@@ -227,16 +228,18 @@ outreg2 using "D:\Modell\sim\params\stellung_asclogit_test.txt", bdec(5) tdec(5)
 
 
 
-forvalues a=2/14 {
+forvalues a=2/16 {
 	forvalues f = 0/1 {
 		gen SOB_f`f'_agr_`a' = SOB & agegrp == `a' & female==`f'
-		gen SMB_f`f'_agr_`a' = SMB & agegrp == `a' & female==`f'
+	    if `a'>2 {
+			gen SMB_f`f'_agr_`a' = SMB & agegrp == `a' & female==`f'
+		}
 		gen MHF_f`f'_agr_`a' = MHF & agegrp == `a' & female==`f'
 //		gen ANG_f`f'_agr_`a' = SOB & agegrp == `a' & female==`f'
 	    if `a'<=7 {
 			gen AZU_f`f'_agr_`a' = AZU & agegrp == `a' & female==`f'
 		}
-	    if `a'<=11 {
+	    if `a' >=3 & `a'<=11 {
 			gen BEA_f`f'_agr_`a' = BEA & agegrp == `a' & female==`f'
 		}
 	}
@@ -335,9 +338,9 @@ constraint define 13 [azubi]12.agegrp#1.female = 0
 constraint define 14 [azubi]13.agegrp#1.female = 0
 constraint define 15 [azubi]14.agegrp#1.female = 0
 
-constraint define 23 [beamte]12.agegrp#1.female = 0
-constraint define 24 [beamte]13.agegrp#1.female = 0
-constraint define 25 [beamte]14.agegrp#1.female = 0
+constraint define 23 [beamte]14.agegrp#1.female = 0
+constraint define 24 [beamte]15.agegrp#1.female = 0
+constraint define 25 [beamte]16.agegrp#1.female = 0
 
 mlogit stellung i.agegrp#female wfl_pk [iw= EF960], base(5) constraint(1/25)
 outreg2 using "D:\Modell\sim\params\stellung_im_beruf.txt", bdec(5) tdec(5) noparen noaster replace
