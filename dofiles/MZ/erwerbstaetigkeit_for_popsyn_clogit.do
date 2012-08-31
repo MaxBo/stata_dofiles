@@ -77,12 +77,14 @@ gen kk23 = (EF44<=3) & (EF44>=2)
 gen kk46 = (EF44<=6) & (EF44>=4)
 gen kk710 = (EF44<=10) & (EF44>=7)
 gen kk1117 = (EF44<=17) & (EF44>=11)
+gen erw = (EF44>=18) & (EF44<.)
 gen ep2165 = (EF44<=65) & (EF44>=21)
 bysort EF3 EF4: egen hhkk01 = total(kk01)
 bysort EF3 EF4: egen hhkk23 = total(kk23)
 bysort EF3 EF4: egen hhkk46 = total(kk46)
 bysort EF3 EF4: egen hhkk710 = total(kk710)
 bysort EF3 EF4: egen hhkk1117 = total(kk1117)
+bysort EF3 EF4: egen hherw = total(erw)
 // Erwerbstätige im Haushalt
 bysort EF3 EF4: egen hh_et = total(erwerb3==1)
 // andere Erwerbstätige im Haushalt
@@ -122,7 +124,7 @@ outreg2 using "D:\Modell\sim\params\vztz.txt", bdec(5) tdec(5) noparen noaster r
 //keep  if pid<50000000
 
 // nur relevante Variablen behalten
-keep pid agegrp female hhkk* wfl_pk bl_gg EF960 erwerb3 andere_et
+keep pid agegrp female hhkk* wfl_pk bl_gg EF960 erwerb3 andere_et hherw
 // EIne Zeile je Alternative
 expand 3
 bysort pid: gen _altnum = _n
@@ -153,6 +155,7 @@ forvalues f = 0/1 {
 	gen ET_f`f'_hhkk46 = hhkk46 * (ET & female==`f')
 	gen ET_f`f'_hhkk710 = hhkk710 * (ET & female==`f')
 	gen ET_f`f'_hhkk1117 = hhkk1117 * (ET & female==`f')
+	gen ET_f`f'_hherw = hherw * (ET & female==`f')
 }
 // andere Erwerbstätige im Haushalt
 gen ET_mann_arbeitet = (andere_et >= 1) & ET & female==1
