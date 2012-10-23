@@ -11,9 +11,11 @@ drop if EF5b == 1
 
 // AGEGRP (age groups)
 
-recode EF44 (0/14 = 1 "0/14") (15/17 = 2 "15/17") (18/20 = 3 "18/20") (21/25 = 4 "21/25") (26/30 = 5 "26/40") (31/35 = 6 "31/35") /*
-*/(36/40 = 7 "36/40") (41/45 = 8 "41/45") (46/50 = 9 "46/50") (51/55 = 10 "51/55") (56/60 = 11 "56/60") (61/63 =12 "61/63") (64/65 =13 "64/65") /*
-*/(66/70 = 14 "66/70") (71/75 = 15 "71/75") (76/95 = 16 "76/95"), gen(agegrp)
+recode EF44 (0/14 = 1 "0/14") (15/15 = 2 "15/15")/*
+*/(16/16 = 3 "16/16") (17/17 = 4 "17/17") (18/18 = 5 "18/18") (19/19 = 6 "19/19") (20/20 = 7 "20/20") (21/21 = 8 "21/21") (22/22 = 9 "22/22") /*
+*/(23/25 = 10 "23/25") (26/30 = 11 "26/40") (31/35 = 12 "31/35") /*
+*/(36/40 = 13 "36/40") (41/45 = 14 "41/45") (46/50 = 15 "46/50") (51/55 = 16 "51/55") (56/60 = 17 "56/60") (61/63 =18 "61/63") (64/65 =19 "64/65") /*
+*/(66/70 = 20 "66/70") (71/75 = 21 "71/75") (76/95 = 22 "76/95"), gen(agegrp)
 
 
 // FEMALE (sex)
@@ -136,12 +138,12 @@ gen NE = _altnum == 3
 gen choice = _altnum == erwerb3
 gen sample = 1
 
-forvalues a=1/16 {
+forvalues a=1/22 {
 	forvalues f = 0/1 {
-	    if `a'>=2 & `a'<=11 {
+	    if `a'>=2 & `a'<=19 {
 			gen AL_f`f'_agr_`a' = AL & agegrp == `a' & female==`f'
 		}
-		if `a'>=2 & `a'<=13 {
+		if `a'>=2 & `a'<=21 {
 			gen NE_f`f'_agr_`a' = NE & agegrp== `a' & female==`f'
 		}
 	}
@@ -179,8 +181,8 @@ gen AL_wfl = AL * wfl_pk
 gen NE_wfl = NE * wfl_pk
 
 
-replace sample = 0 if AL & (agegrp==1 | agegrp >= 14)
-replace sample = 0 if ET & (agegrp==1 | agegrp >= 16)
+replace sample = 0 if AL & (agegrp==1 | agegrp >= 20)
+replace sample = 0 if ET & (agegrp==1 | agegrp >= 22)
 
 
 //clogit choice AL_* NE_* ET_*  if sample  [iw= EF960] , group(pid)
@@ -215,31 +217,34 @@ gen AZU = _altnum == 6
 gen choice = _altnum == stellung
 gen sample = 1
 
-replace sample = 0 if AZU & agegrp > 8
-replace sample = 0 if BEA & agegrp > 14
-tab agegrp, gen(ag_)
-fovalues i=1/13 {
-    local i1 = `i'+1
-    rename ag_`i' ag_`i1'
-}
-
-asclogit choice if sample, case(pid) alt(_altnum) casevars(ag_* wfl_pk)
-outreg2 using "D:\Modell\sim\params\stellung_asclogit_test.txt", bdec(5) tdec(5) noparen noaster replace
+replace sample = 0 if AZU & agegrp > 14
+replace sample = 0 if BEA & ( agegrp > 19 | agegrp < 5)
+replace sample = 0 if SMB & agegrp < 6
 
 
+*tab agegrp, gen(ag_)
+*fo5values i=1/22 {
+*    local i1 = `i'+1
+*    rename ag_`i' ag_`i1'
+*}
+*
+*asclogit choice if sample, case(pid) alt(_altnum) casevars(ag_* wfl_pk)
+*outreg2 using "D:\Modell\sim\params\stellung_asclogit_test.txt", bdec(5) tdec(5) noparen noaster replace
 
-forvalues a=2/16 {
+
+
+forvalues a=2/22 {
 	forvalues f = 0/1 {
 		gen SOB_f`f'_agr_`a' = SOB & agegrp == `a' & female==`f'
-	    if `a'>2 {
+	    if `a'>=6 {
 			gen SMB_f`f'_agr_`a' = SMB & agegrp == `a' & female==`f'
 		}
 		gen MHF_f`f'_agr_`a' = MHF & agegrp == `a' & female==`f'
 //		gen ANG_f`f'_agr_`a' = SOB & agegrp == `a' & female==`f'
-	    if `a'<=7 {
+	    if `a'<=14 {
 			gen AZU_f`f'_agr_`a' = AZU & agegrp == `a' & female==`f'
 		}
-	    if `a' >=3 & `a'<=11 {
+	    if `a' >=5 & `a'<=19 {
 			gen BEA_f`f'_agr_`a' = BEA & agegrp == `a' & female==`f'
 		}
 	}
@@ -320,27 +325,27 @@ outreg2 using "C:\Thiago\ELAN\MZ\etaetig\results\model1.txt", bdec(5) tdec(5) no
 // MODEL 2
 // Welche ist die Erwerbstätigkeit (Erwerbstätige, Mithelfende Familienangehörige, gelegentlicher Zuverdienst in der Berichtswoche, geringfügig Beschäftigte) der Erwerbstätigen?
 // mlogit EF84 i.agegrp female alone pers_hh i.bl_gg if erwerb_a == 1, base(5)
-mlogit EF84 i.agegrp female pers_hh i.bl_gg if erwerb_a == 1 & (agegrp > 1 & agegrp <= 12), base(1)
+mlogit EF84 i.agegrp female pers_hh i.bl_gg if erwerb_a == 1 & (agegrp > 1 & agegrp <= 18), base(1)
 
 
 
 recode EF117 (1=1 "s_o_b") (2=2 "s_m_b") (3=3 "mhfam") (4 9 =4 "beamte") (5/6 10/11 = 5 "angest") (7/8=7 "azubi"), gen(stellung)
 
-constraint define 1 [azubi]10.agegrp#0b.female = 0
-constraint define 2 [azubi]11.agegrp#0b.female = 0
-constraint define 3 [azubi]12.agegrp#0b.female = 0
-constraint define 4 [azubi]13.agegrp#0b.female = 0
-constraint define 5 [azubi]14.agegrp#0b.female = 0
-constraint define 6 [azubi]9.agegrp#0b.female = 0
-constraint define 11 [azubi]10.agegrp#1.female = 0
-constraint define 12 [azubi]11.agegrp#1.female = 0
-constraint define 13 [azubi]12.agegrp#1.female = 0
-constraint define 14 [azubi]13.agegrp#1.female = 0
-constraint define 15 [azubi]14.agegrp#1.female = 0
+constraint define 1 [azubi]15.agegrp#0b.female = 0
+constraint define 2 [azubi]16.agegrp#0b.female = 0
+constraint define 3 [azubi]17.agegrp#0b.female = 0
+constraint define 4 [azubi]18.agegrp#0b.female = 0
+constraint define 5 [azubi]19.agegrp#0b.female = 0
+constraint define 6 [azubi]20.agegrp#0b.female = 0
+constraint define 11 [azubi]15.agegrp#1.female = 0
+constraint define 12 [azubi]16.agegrp#1.female = 0
+constraint define 13 [azubi]17.agegrp#1.female = 0
+constraint define 14 [azubi]18.agegrp#1.female = 0
+constraint define 15 [azubi]19.agegrp#1.female = 0
 
-constraint define 23 [beamte]14.agegrp#1.female = 0
-constraint define 24 [beamte]15.agegrp#1.female = 0
-constraint define 25 [beamte]16.agegrp#1.female = 0
+constraint define 23 [beamte]20.agegrp#1.female = 0
+constraint define 24 [beamte]21.agegrp#1.female = 0
+constraint define 25 [beamte]22.agegrp#1.female = 0
 
 mlogit stellung i.agegrp#female wfl_pk [iw= EF960], base(5) constraint(1/25)
 outreg2 using "D:\Modell\sim\params\stellung_im_beruf.txt", bdec(5) tdec(5) noparen noaster replace
