@@ -958,7 +958,7 @@ label value auswertungsklassen_raum aw_ms
 label define aw_ms 7 "HH - Innenstadt" 8 "HH - Zwischenzone 1" 9 "HH - Zwischenzone 2" 10 "HH - Stadtrand" 11 "ländl. HH", modify
 
 tabout auswertungsklassen_raum verh_perg   [iw=p_gew]  using "M:\Nachfragedaten\Berechnungsergebnisse\verh_besch_hh.txt", replace c(freq row col)  layout(rb)
-tabout auswertungsklassen_raum verh_perg   [iw=p_gew] if hp_alter>18 & hp_alter<26  using "M:\Nachfragedaten\Berechnungsergebnisse\verh_besch_hh_19_25.txt", replace c(freq row col)  layout(rb)
+tabout auswertungsklassen_raum verh_perg   [iw=p_gew] if hp_alter>19 & hp_alter<26  using "M:\Nachfragedaten\Berechnungsergebnisse\verh_besch_hh_20_25.txt", replace c(freq row col)  layout(rb)
 tabout auswertungsklassen_raum verh_perg  [iw=p_gew] if hp_alter>15 & hp_alter<20  using "M:\Nachfragedaten\Berechnungsergebnisse\verh_besch_hh_16_19.txt", replace c(freq row col)  layout(rb)
 
 save "`path'MiD_2008_2006_Personen_6.dta", replace
