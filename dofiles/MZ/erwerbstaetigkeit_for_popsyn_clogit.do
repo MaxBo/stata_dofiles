@@ -15,7 +15,7 @@ recode EF44 (0/14 = 1 "0/14") (15/15 = 2 "15/15")/*
 */(16/16 = 3 "16/16") (17/17 = 4 "17/17") (18/18 = 5 "18/18") (19/19 = 6 "19/19") (20/20 = 7 "20/20") (21/21 = 8 "21/21") (22/22 = 9 "22/22") /*
 */(23/25 = 10 "23/25") (26/30 = 11 "26/40") (31/35 = 12 "31/35") /*
 */(36/40 = 13 "36/40") (41/45 = 14 "41/45") (46/50 = 15 "46/50") (51/55 = 16 "51/55") (56/60 = 17 "56/60") (61/63 =18 "61/63") (64/65 =19 "64/65") /*
-*/(66/70 = 20 "66/70") (71/75 = 21 "71/75") (76/95 = 22 "76/95"), gen(agegrp)
+*/(66/70 = 20 "66/70") (71/95 = 21 "71/95"), gen(agegrp)
 
 
 // FEMALE (sex)
@@ -64,12 +64,15 @@ gen wfl_pk = EF492 / EF637
 // EF38 is subdivision of EF29
 clonevar erwerb = EF38
 recode erwerb (1 3 = 1) (4 5 12 13 = 3) (2 6/10 14 15 = 2) (16 19 20 = 4) (17 18 21 = 5) (22 = 6)
-label define erwerb 1 "[1] Erwerbstätige (inkl. WZD)" 2 "[2] gleich (wieder) Erwerbstätige" 3 "[3] Erwerbslose/Arbeitsuchender" 4 "[4] Nichterwerbsperson (keine Suche)" 5 "[5] Nichterwerbsperson (Rentner o. ä.)" 6 "[6] Nichterwerbsperson (Kind)", replace
+label define erwerb 1 "[1] Erwerbstätige (inkl. WZD)" 2 "[2] gleich (wieder) Erwerbstätige" /*
+*/ 3 "[3] Erwerbslose/Arbeitsuchender" 4 "[4] Nichterwerbsperson (keine Suche)" /*
+*/ 5 "[5] Nichterwerbsperson (Rentner o. ä.)" 6 "[6] Nichterwerbsperson (Kind)", replace
 label values erwerb erwerb
 tab erwerb EF38, m
 
 recode EF38 (1/3 6/10 = 1 "ET") (4 5 12 13 = 2 "AL") (14/22 = 3 "NE"), gen(erwerb3)
-
+recode EF38 (1/3 = 1 "ET") (4 5 12 13 = 2 "AL") (14/21 = 3 "EL") (22 = 4 "NEF") (6/10 = .), gen(erwerb4)
+recode erwerb4 (3=4) if EF44 > 70 | EF233 == 4 | EF233 == 10
 
 // Modell Erwerbtstätig/AL/NE
 // Für Simulation zu differenzieren nach EW_M/W und AL 1525-AL2555-AL5565 (NE als Referenzkategorie
@@ -104,6 +107,11 @@ recode EF117 (1=1 "s_o_b") (2=2 "s_m_b") (3=3 "mhfam") (4 9 =4 "beamte") (5/6 10
 // eindeutige ID
 gen long pid = EF3 * 10000 + EF4 * 100 + EF5a
 
+//
+recode erwerb4 (1/2 = .) (3=0 "EL") (4=1 "NEF"), gen(nicht_erwerbsf)
+logit nicht_erwerbsf i.agegrp#female  i.bl_gg if agegrp >= 2 & agegrp <= 20
+outreg2 using "D:\Modell\sim\params\nicht_erwerbsf.txt", bdec(5) tdec(5) noparen noaster replace
+
 
 *******************************************************************
 
@@ -121,6 +129,7 @@ logit vz i.agegrp#female i.bl_gg wfl_pk i.stellung if erwerb3 == 1 [iw=EF960]
 outreg2 using "D:\Modell\sim\params\vztz.txt", bdec(5) tdec(5) noparen noaster replace
 
 *******************************************************************
+// Erwerbstätigkeit, Arbeitslose, Nicht Erwerbstätige
 // CLogit Modell ET_AL_NE
 
 
@@ -138,12 +147,12 @@ gen NE = _altnum == 3
 gen choice = _altnum == erwerb3
 gen sample = 1
 
-forvalues a=1/22 {
+forvalues a=1/21 {
 	forvalues f = 0/1 {
 	    if `a'>=2 & `a'<=19 {
 			gen AL_f`f'_agr_`a' = AL & agegrp == `a' & female==`f'
 		}
-		if `a'>=2 & `a'<=21 {
+		if `a'>=2 & `a'<=20 {
 			gen NE_f`f'_agr_`a' = NE & agegrp== `a' & female==`f'
 		}
 	}
@@ -182,7 +191,7 @@ gen NE_wfl = NE * wfl_pk
 
 
 replace sample = 0 if AL & (agegrp==1 | agegrp >= 20)
-replace sample = 0 if ET & (agegrp==1 | agegrp >= 22)
+replace sample = 0 if ET & (agegrp==1 | agegrp >= 21)
 
 
 //clogit choice AL_* NE_* ET_*  if sample  [iw= EF960] , group(pid)
@@ -223,7 +232,7 @@ replace sample = 0 if SMB & agegrp < 6
 
 
 *tab agegrp, gen(ag_)
-*fo5values i=1/22 {
+*fo5values i=1/21 {
 *    local i1 = `i'+1
 *    rename ag_`i' ag_`i1'
 *}
@@ -233,7 +242,7 @@ replace sample = 0 if SMB & agegrp < 6
 
 
 
-forvalues a=2/22 {
+forvalues a=2/21 {
 	forvalues f = 0/1 {
 		gen SOB_f`f'_agr_`a' = SOB & agegrp == `a' & female==`f'
 	    if `a'>=6 {

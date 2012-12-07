@@ -290,7 +290,7 @@ constraint define 5 cParkWage_kS = cPkw_kS
 constraint define 6 cParkWage_Sch = cPkw_Sch
 }
 
-
+local incoffset 1600
 clogit chosen P_*Pkw M_*Pkw Dichte*Pkw H*Pkw Kind*Pkw Ausb*Pkw ZK*Pkw ZK_OV ZK_Studi /*
 */ F R Bus Bahn M /*
 */ tFuss tRad tPkw tMF tOV_FZBus tOV_FZBahn tOV_SWZ tOV_UH tOV_Gehzeit tOV_WZ rInc`incoffset'ln if _sample,group(PersId)

@@ -136,16 +136,17 @@ compress
 quietly {
 noi di "speichere Datensatz für Einkaufsfahrten zwischen"
 preserve
-local fn "D:\\DatenMaxDiss\\MiD-H\\txt\\P_Einkauf.dta"
+local fn "$MiD_workingdir\Stata\\P_Einkauf.dta"
 keep if wZweckModell==4 & vonZuHause & TourAnzWege==2
 saveold `fn', replace
 restore
 preserve
-local fn "D:\\DatenMaxDiss\\MiD-H\\txt\\P_EinkaufAper.dta"
+local fn "$MiD_workingdir\Stata\\P_EinkaufAper.dta"
 keep if wZweckModell==5 & !SonstigeTour
 saveold `fn', replace
 keep WegId PersId caseid
-odbc insert WegId  PersId caseid, as("wegid persid caseid") dsn("h_localhost64") table("wege_ehaper") create
+* odbc insert WegId  PersId caseid, as("wegid persid caseid") dsn("h_localhost64") table("wege_ehaper") create
+odbc insert WegId  PersId caseid, as("wegid persid caseid") dsn("h_localhost64") table("wege_ehaper") overwrite 
 restore
 }
 
