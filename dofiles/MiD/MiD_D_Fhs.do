@@ -3,10 +3,10 @@ recode hp_pkwfs (7/9=.b) (1=1 "ja") (2=0 "Nein"), gen(fhs)
 recode hp_alter (994/999 = .b)
 egen agegrp = cut(hp_alter), at(0 17 18 19 20 21 22 23 24 25 30 35 40 45 50 55 60 65 70 75 80 85 90 105)
 recode hp_sex (9=.b) (1=0 "Mann") (2=1 "Frau"), gen(female)
-recode hp_besch (99=.a) (3=1 "Vollzeit") (2=2 "Teilzeit") (5=5 "Schüler") (6=6 "Studi") (7/12 14 = 15 "Nicht Erwerbst") (13=4 "Azubi, Wehrdienst"), gen(erwerbst)
+recode hp_besch (99=.a) (3=1 "Vollzeit") (2=2 "Teilzeit") (5=5 "Schï¿½ler") (6=6 "Studi") (7/12 14 = 15 "Nicht Erwerbst") (13=4 "Azubi, Wehrdienst"), gen(erwerbst)
 recode hp_besch (99=.a) (3=1 "Vollzeit") (2 6=2 "Teilzeit") (5 7/12 14 = 4 "Nicht Erwerbst") (13 4=3 "Azubi, Wehrdienst"), gen(erwerb4)
 
-* Haushaltsgröße, Einkommen und persönlichen Äquivalenzeinkommen
+* Haushaltsgrï¿½ï¿½e, Einkommen und persï¿½nlichen ï¿½quivalenzeinkommen
 recode h02 (98/99 = .a)
 gen anz_pers = 1 + (hhgr14*.3) + (h02-hhgr14-1)*.5
 recode hheink (79/99=.a)
@@ -16,7 +16,7 @@ gen hhinc = inc_u + runiform()*(inc_o-inc_u)
 drop inc_u inc_o
 gen pinc = hhinc / anz_pers
 
-* räumliche Variablen
+* rï¿½umliche Variablen
 recode  p052 p054 p0411_4 (7/99=.a) (102/109=.b)
 
 rename p0411_4 err_shops
@@ -49,7 +49,7 @@ gen anz_pers = 1 + (hhgr14*.3) + (h02-hhgr14-1)*.5
 gen pinc = hhinc / anz_pers
 gen pincln = ln(pinc)
 
-// Resteinkommen = HH-Netto - Grundbedarf (abhängig von der Zahl der Personen im Haushalt)
+// Resteinkommen = HH-Netto - Grundbedarf (abhï¿½ngig von der Zahl der Personen im Haushalt)
 gen grundbedarf = anz_pers*250
 gen rinc = hhinc - grundbedarf
 
