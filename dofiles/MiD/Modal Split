@@ -1,0 +1,30 @@
+**Modal Split Vergleich Infas***
+
+use "O:\MiD-H\MIR-2011\stata\Wege_Raumkategorien_cod.dta", clear
+set mem 800m
+set more off
+
+tab HVM Raumkategorien[iw=W_GEW], col nof
+tab HVM REGION [iw=W_GEW], col nof
+tab HVM Regins [iw=W_GEW], col nof
+tab HVM Hann_Umland [iw=W_GEW], col nof
+tab HVM Umland_Schiene [iw=W_GEW], col nof
+tab HVM Umland [iw=W_GEW], col nof
+tab HVM Regins_Schiene [iw=W_GEW], col nof
+tab HVM Regins_ohne_Schiene [iw=W_GEW], col nof
+
+
+use "O:\MiD-H\MiR2002\Stata\Wege_Raumkategorien.dta", clear
+set mem 800m
+set more off
+
+***es gibt keinen Wege-Gewichtungsfaktor, daher wurde hier der Personen-Gewichtungsfaktor verwendet***
+
+tab Verkm5 Raumkategorien if Verkm5 !=-9 [iw=gew_pa], col nof
+tab Verkm5 REGION if Verkm5 !=-9 [iw=gew_pa], col nof
+tab Verkm5 Regins if Verkm5 !=-9 [iw=gew_pa], col nof
+tab Verkm5 Hann_Umland if Verkm5 !=-9 [iw=gew_pa], col nof
+tab Verkm5 Umland_Schiene if Verkm5 !=-9 [iw=gew_pa], col nof
+tab Verkm5 Umland if Verkm5 !=-9 [iw=gew_pa], col nof
+tab Verkm5 Regins_Schiene if Verkm5 !=-9 [iw=gew_pa], col nof
+tab Verkm5 Regins_ohne_Schiene if Verkm5 !=-9 [iw=gew_pa], col nof
