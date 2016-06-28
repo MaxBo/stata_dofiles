@@ -48,8 +48,8 @@ bysort PersId TourId: egen TourKm = total(wKm)
 bysort PersId TourId: gen AktDauer = (Abfahrt[_n+1]-Ankunft) / 60000
 replace AktDauer = AktDauer + 1440 if AktDauer < 0
 
-noi di "lösche Pendeltouren"
-keep if AWTour==0 // betrachte nur Wege, die nicht Teil einer Pendeltour sind
+// noi di "lösche Pendeltouren"
+// keep if AWTour==0 // betrachte nur Wege, die nicht Teil einer Pendeltour sind
 drop if mode5 >=.
 sort WegId
 noi di "spiele Zeit und Kostenvariablen zu"
@@ -127,10 +127,13 @@ replace wage0 = 3 if wage0 < 3 // bei wage = 1 wäre ln(1) = 0 und damit die Kost
 gen lnwage =  ln(wage0) // ln(Studenlohn)
 gen DichteSt = DiStEW + 2*(DiStAPpriv + DiStAPOD)+ 3*DiStEHaperi+DiStStudPl
 gen DichteZi = DiZiEW + 2*(DiZiAPpriv + DiZiAPOD)+ 3*DiZiEHaperi+DiZiStudPl
+merge m:1 caseid pid using "$MiD\H\Stata\P_pkwverf.dta"
+drop if _merge==1
 
 compress
-
 }
+
+
 
 
 quietly {
@@ -149,6 +152,8 @@ keep WegId PersId caseid
 odbc insert WegId  PersId caseid, as("wegid persid caseid") dsn("h_localhost64") table("wege_ehaper") overwrite 
 restore
 }
+
+
 
 quietly {
 noi di "bilde eine Zeile je Alternative"
@@ -177,12 +182,16 @@ replace _sample = 0 if MinKfz >=.
 noi di "berechne Verfügbarkeits-Variablen"
 // Auswirkungen Pkw-Verfügbarkeit auf Pkw-Nutzung
 qui dropvars P_*Pkw M_*Pkw
-gen P_keinPkw = P & (hPkwVerf==0)
-gen P_getPkw = P & (hPkwVerf==1)
-// gen P_eigPkw = P & eigPkw
-gen M_keinPkw = M & (hPkwVerf==0)
-gen M_getPkw = M & (hPkwVerf==1)
-// gen M_eigPkw = M & eigPkw
+* keine Pkw-Nutzung ohne Führerschein
+replace _sample = 0 if P & PKW_FS <=1
+gen P_keinPkw = P & (PKW_FS==2)
+gen P_getPkw = P & (PKW_FS==3)
+gen P_eigPkw = P & (PKW_FS==4)
+
+gen M_kHHPkw = M & (PKW_FS==0 | PKW_FS==2)
+gen M_kFhsHHPkw = M & (PKW_FS==1)
+gen M_getPkw = M & (PKW_FS==3)
+* gen M_eigPkw = M & (PKW_FS==4)
 
 // Zeitkartenverfügbarkeit
 gen ZK_OV = (zeitkarte==1) & O
@@ -264,18 +273,27 @@ constraint define 16 Bahn = Bus
 constraint define 20 F = 0
 constraint define 21 R = 0
 constraint define 22 Bahn = 0
+constraint define 44 tOV_FZ = -0.05
 
 clogit chosen P_*Pkw M_*Pkw  /* & wZweck==7 ZK_OV   & wZweckEinkauf==502
-*/ F R O M /*
-*/ tFuss tRad tPkw tMF tOV_FZ tOV_SWZ tOV_Gehzeit tOV_WZ /*  tOV_UH 
+*/ F R Bus Bahn /*
+*/ tFuss tRad tPkw tMF tOV_FZ  tOV_SWZ tOV_Gehzeit tOV_WZ /*  tOV_UH 
 */ cOV cPkw cPkwM    /*  cost cPkw cPkwM  tPark
-*/ if _sample & (wZweckModell==4) & vonZuHause & TourAnzWege==2,group(WegId) constraint(4 5 11/13) // 
+*/ if _sample & vonZuHause & TourAnzWege==2,group(WegId) /* 
+*/ constraint(4 11 12 13) // 
+
+
+clogit chosen P_*Pkw M_*Pkw  /* & wZweck==7 ZK_OV   & wZweckEinkauf==502
+*/ F R Bus Bahn /*
+*/ tFuss tRad tPkw tMF tOV_FZ  tOV_SWZ tOV_Gehzeit tOV_WZ /*  tOV_UH 
+*/ if _sample & vonZuHause & TourAnzWege==2,group(WegId) /* 
+*/ constraint(44) // 
 
 clogit chosen P_*Pkw M_*Pkw  /* & wZweck==7 ZK_OV   & wZweckEinkauf==502
 */ F R Bus Bahn M /*
 */ tFuss tRad tPkw tMF tOV_FZBus tOV_FZBahn tOV_SWZ tOV_Gehzeit tOV_WZ /*  tOV_UH 
-*/ cOV cPkw cPkwM   ZK_OV /*  cost cPkw cPkwM  tPark
-*/ if _sample & (wZweckModell==4) & vonZuHause & TourAnzWege==2,group(WegId) constraint(41 2 5 11 12 14 15 ) // 
+*/ cOV cPkw cPkwM  /*  cost cPkw cPkwM  tPark
+*/ if _sample & vonZuHause & TourAnzWege==2,group(WegId) constraint(41 2 5 11 12 14 15 ) // 
 
 ** Das ist das aktuelle Modell, das zur Schätzung für Einkaufen periodisch verwendet wurde...
 clogit chosen P_*Pkw M_*Pkw  /* & wZweck==7 ZK_OV   & wZweckEinkauf==502
